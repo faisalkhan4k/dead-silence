@@ -1,0 +1,27 @@
+{
+  "name": "User supplied English letter-name groups",
+  "version": "1",
+  "group_count": 9,
+  "pronunciation": "English letter names; Z=zee",
+  "provenance": "User supplied on 2026-11-06; broad articulatory hypotheses, acoustically unvalidated",
+  "letter_to_group": {
+    "A": "Group 3", "B": "Group 1", "C": "Group 2", "D": "Group 2",
+    "E": "Group 2", "F": "Group 4", "G": "Group 2", "H": "Group 3",
+    "I": "Group 7", "J": "Group 3", "K": "Group 3", "L": "Group 4",
+    "M": "Group 5", "N": "Group 4", "O": "Group 6", "P": "Group 1",
+    "Q": "Group 6", "R": "Group 8", "S": "Group 4", "T": "Group 2",
+    "U": "Group 6", "V": "Group 2", "W": "Group 9", "X": "Group 4",
+    "Y": "Group 7", "Z": "Group 2"
+  },
+  "broad_features": {
+    "Group 1": "Full lip closure followed by ee",
+    "Group 2": "Ee-dominant letter names",
+    "Group 3": "Ay-dominant letter names",
+    "Group 4": "Eh-initial letter names",
+    "Group 5": "Eh followed by lip closure",
+    "Group 6": "Rounded ending",
+    "Group 7": "Wide-to-narrow vowel movement",
+    "Group 8": "Rhotic movement",
+    "Group 9": "Long, multisyllabic movement"
+  }
+}

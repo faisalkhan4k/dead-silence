@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+breath_dataset/
+airflow_alphabet_dataset/
+breath_mlflow.db
+mlruns/
+*.wav
+*.npy
+*.npz
+*.pkl
+*.log
+.tmp/
+breath_sequence_dataset/

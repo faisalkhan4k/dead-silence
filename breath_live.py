@@ -1,0 +1,258 @@
+"""Experimental 50 ms breath window model and live five-breath display."""
+import json, os, pickle, queue, time
+from pathlib import Path
+import numpy as np
+import sounddevice as sd
+from scipy.io import wavfile
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+from PySide6 import QtCore, QtWidgets as Q
+from breath_decoder import Decoder
+import breath_language
+import re
+import html
+from difflib import SequenceMatcher
+
+HERE = Path(__file__).resolve().parent
+def find_dataset():
+    root = HERE/'breath_dataset'
+    runs = sorted((p for p in root.glob('*') if p.is_dir() and (p/'train_accepted.json').exists() and (p/'test_accepted.json').exists()), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not runs:
+        raise SystemExit('No complete breath dataset found. Run Start Breath Dataset.cmd first and complete training and test collection.')
+    return runs[0]
+DATA = find_dataset()
+MODEL = DATA/'window50_model.pkl'
+RATE, N = 48000, 2400
+LABELS = ['SILENCE', 'INHALE', 'EXHALE']
+
+def feature(x):
+    x = np.asarray(x, dtype=float)
+    if len(x) != N: raise ValueError('Expected 50 ms at 48 kHz')
+    spectrum = abs(np.fft.rfft(x*np.hanning(N)))**2 / N**2
+    f = np.fft.rfftfreq(N, 1/RATE)
+    bands = [(80,300),(300,700),(700,1500),(1500,3000),(3000,6000),(6000,12000)]
+    return np.array([np.log10(np.mean(spectrum[(f>=a)&(f<b)])+1e-12) for a,b in bands])
+
+def examples(role):
+    rows = json.loads((DATA/f'{role}_accepted.json').read_text())
+    X,y = [],[]
+    for row in rows.values():
+        rate, x = wavfile.read(row['path'])
+        if rate != RATE or len(x) != 4*RATE: raise ValueError('Unexpected recording format')
+        if np.issubdtype(x.dtype, np.integer): x=x.astype(float)/np.iinfo(x.dtype).max
+        for start in range(int(.15*RATE), int(.85*RATE), N):
+            X.append(feature(x[start:start+N])); y.append('SILENCE')
+        # Weak labels: action cue does not mean every 50 ms contains breathing.
+        for start in range(int(1.1*RATE), int(2.9*RATE), N):
+            X.append(feature(x[start:start+N])); y.append(row['label'])
+    return np.array(X),np.array(y)
+
+def train():
+    X,y=examples('train'); T,t=examples('test')
+    model=RandomForestClassifier(n_estimators=100, max_depth=8, min_samples_leaf=4, random_state=42, n_jobs=1, class_weight='balanced')
+    model.fit(X,y); pred=model.predict(T)
+    MODEL.write_bytes(pickle.dumps(model))
+    result={'window_accuracy_weak_labels':float(accuracy_score(t,pred)), 'labels':LABELS,
+            'confusion_matrix':confusion_matrix(t,pred,labels=LABELS).tolist(), 'test_windows':len(t)}
+    (DATA/'window50_evaluation.json').write_text(json.dumps(result,indent=2))
+    try:
+        import mlflow
+        mlflow.set_tracking_uri('sqlite:///'+(HERE/'breath_mlflow.db').as_posix())
+        mlflow.set_experiment('breath-live')
+        with mlflow.start_run(run_name='50ms-window-training'):
+            mlflow.log_params({'window_ms':50,'model':'random_forest','labels':'weak action-window labels','test_split':'held-out recordings'})
+            mlflow.log_metric('weak_window_accuracy',result['window_accuracy_weak_labels'])
+            mlflow.log_artifact(str(DATA/'window50_evaluation.json'))
+    except Exception as e: print(f'MLflow logging unavailable: {e}')
+    print(json.dumps(result,indent=2))
+
+class Worker(QtCore.QThread):
+    done = QtCore.Signal(str, object, str)
+    def __init__(self, kind, text):
+        super().__init__(); self.kind=kind; self.text=text
+    def run(self):
+        try:
+            fn={'suggest':breath_language.suggestions, 'respond':breath_language.respond, 'speak':breath_language.speak}[self.kind]
+            self.done.emit(self.kind, fn(self.text), '')
+        except Exception as exc: self.done.emit(self.kind, None, str(exc))
+
+class Window(Q.QWidget):
+    def __init__(self):
+        super().__init__(); self.setWindowTitle('Breath to text • experimental')
+        self.resize(950,650); self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
+        self.stream=None; self.times=[]; self.drops=0; self.workers=[]; self.speaking=False
+        self.suggestion_source=None; self.suggestion_word=None
+        self.current='SILENCE'; self.candidate='SILENCE'; self.count=0; self.decoder=Decoder()
+        layout=Q.QVBoxLayout(self)
+        self.devices=[(i,d) for i,d in enumerate(sd.query_devices()) if d['max_input_channels']]
+        self.device=Q.QComboBox()
+        for i,d in self.devices: self.device.addItem(d['name'],i)
+        layout.addWidget(self.device)
+        key_row=Q.QHBoxLayout(); layout.addLayout(key_row)
+        self.key_input=Q.QLineEdit(); self.key_input.setEchoMode(Q.QLineEdit.EchoMode.Password)
+        self.key_input.setPlaceholderText('Groq API key (optional if GROQ_API_KEY is in .env)')
+        key_row.addWidget(self.key_input)
+        key_button=Q.QPushButton('Use key for this session'); key_button.clicked.connect(self.set_key); key_row.addWidget(key_button)
+        self.info=Q.QLabel('1 = inhale • 2 = exhale • short gaps between breaths • letter pause 0.8 s • word pause 2 s'); self.info.setWordWrap(True); layout.addWidget(self.info)
+        self.live=Q.QLabel('Ready'); self.live.setStyleSheet('font-size: 24px; font-weight: bold'); layout.addWidget(self.live)
+        self.target=Q.QLineEdit(); self.target.setPlaceholderText('Optional experiment target phrase (not sent to MLflow)'); layout.addWidget(self.target)
+        self.message=Q.QPlainTextEdit(); self.message.setPlaceholderText('Decoded text appears here. You can edit it.'); layout.addWidget(self.message,1)
+        comfort=Q.QHBoxLayout(); layout.addLayout(comfort); comfort.addWidget(Q.QLabel('Comfort after this run:'))
+        self.comfort=Q.QComboBox(); self.comfort.addItems(['Not rated','1 - very uncomfortable','2 - uncomfortable','3 - neutral','4 - comfortable','5 - very comfortable']); comfort.addWidget(self.comfort)
+        self.ghost=Q.QLabel(''); self.ghost.setWordWrap(True); self.ghost.setTextFormat(QtCore.Qt.TextFormat.RichText); layout.addWidget(self.ghost)
+        self.suggestions=Q.QHBoxLayout(); layout.addLayout(self.suggestions)
+        self.suggestion_buttons=[]
+        for _ in range(3):
+            button=Q.QPushButton('—'); button.setEnabled(False); button.clicked.connect(lambda checked=False,b=button:self.use_suggestion(b.text()))
+            self.suggestions.addWidget(button); self.suggestion_buttons.append(button)
+        self.language_status=Q.QLabel('Suggestions use Groq. Add GROQ_API_KEY to .env, then restart.'); self.language_status.setWordWrap(True); layout.addWidget(self.language_status)
+        self.reply=Q.QLabel('Crewmate reply: —'); self.reply.setWordWrap(True); layout.addWidget(self.reply)
+        opts=Q.QHBoxLayout(); layout.addLayout(opts)
+        self.letter_gap=self.spin(opts,'Letter gap',.3,3,.8)
+        self.word_gap=self.spin(opts,'Word gap',.5,8,2)
+        self.long_breath=self.spin(opts,'Long breath',.5,5,1.2)
+        self.recovery=self.spin(opts,'Recovery',.5,10,2)
+        buttons=Q.QHBoxLayout(); layout.addLayout(buttons)
+        self.start=Q.QPushButton('Start'); self.start.clicked.connect(self.toggle); buttons.addWidget(self.start)
+        send=Q.QPushButton('Send'); send.clicked.connect(self.send); buttons.addWidget(send)
+        delete=Q.QPushButton('Delete letter'); delete.clicked.connect(self.delete_letter); buttons.addWidget(delete)
+        space=Q.QPushButton('Space'); space.clicked.connect(lambda:self.insert(' ')); buttons.addWidget(space)
+        self.timer=QtCore.QTimer(self); self.timer.timeout.connect(self.poll); self.timer.start(25)
+        self.suggest_timer=QtCore.QTimer(self); self.suggest_timer.setSingleShot(True); self.suggest_timer.timeout.connect(self.request_suggestions)
+        self.message.textChanged.connect(self.text_changed)
+    def text_changed(self):
+        self.suggestion_source=None; self.suggestion_word=None; self.ghost.clear()
+        for button in self.suggestion_buttons: button.setEnabled(False); button.setText('—')
+        self.suggest_timer.start(900)
+    def show_ghost(self, text, word):
+        prefix=re.search(r'[A-Za-z]+$',text)
+        if prefix and word.lower().startswith(prefix.group().lower()) and len(word)>len(prefix.group()):
+            tail=word[len(prefix.group()):]
+            self.ghost.setText('<span>Completion: '+html.escape(prefix.group())+'</span><span style="color:#999;">'+html.escape(tail)+'</span>')
+        else: self.ghost.clear()
+    def accept_word_pause(self):
+        text=self.message.toPlainText()
+        prefix=re.search(r'[A-Za-z]+$',text)
+        if prefix and self.suggestion_source==text and self.suggestion_word:
+            self.use_suggestion(self.suggestion_word)
+        elif text and not text.endswith(' '): self.insert(' ')
+    def set_key(self):
+        key=self.key_input.text().strip()
+        if key:
+            os.environ['GROQ_API_KEY']=key; self.key_input.clear()
+            self.language_status.setText('Key set for this app session. Text is sent to Groq for suggestions and replies.'); self.suggest_timer.start(300)
+        else: self.language_status.setText('Enter an API key first.')
+    def spin(self, layout, label, low, high, value):
+        layout.addWidget(Q.QLabel(label+' (s)')); spin=Q.QDoubleSpinBox(); spin.setRange(low,high); spin.setSingleStep(.1); spin.setValue(value); layout.addWidget(spin); return spin
+    def insert(self,text):
+        cursor=self.message.textCursor(); cursor.movePosition(cursor.MoveOperation.End); cursor.insertText(text); self.message.setTextCursor(cursor)
+    def delete_letter(self):
+        text=self.message.toPlainText().rstrip(); self.message.setPlainText(text[:-1]); self.decoder.code=''
+    def use_suggestion(self,word):
+        text=self.message.toPlainText(); prefix=re.search(r'[A-Za-z]+$',text)
+        if prefix: text=text[:prefix.start()]
+        self.message.setPlainText(text+word+' ')
+    def launch_worker(self,kind,text):
+        if any(w.isRunning() and w.kind==kind for w in self.workers): return False
+        w=Worker(kind,text); self.workers.append(w); w.done.connect(lambda k,r,e,w=w:self.worker_done(w,k,r,e)); w.finished.connect(lambda w=w:self.workers.remove(w) if w in self.workers else None); w.start(); return True
+    def request_suggestions(self):
+        text=self.message.toPlainText()
+        for b in self.suggestion_buttons: b.setEnabled(False); b.setText('—')
+        if text.strip() and not self.speaking: self.launch_worker('suggest',text)
+    def worker_done(self,worker,kind,result,error):
+        if kind=='suggest':
+            if worker.text!=self.message.toPlainText(): self.suggest_timer.start(300); return
+            if error: self.language_status.setText('Suggestions unavailable: ' + error + ''); return
+            prefix=re.search(r'[A-Za-z]+$',worker.text); prefix=prefix.group().lower() if prefix else ''
+            words=[]
+            for line in result.splitlines():
+                word=line.strip().strip(' -0123456789.)')
+                if re.fullmatch(r'[A-Za-z]+',word) and word.lower().startswith(prefix) and word.lower() not in [x.lower() for x in words]: words.append(word)
+            for b,word in zip(self.suggestion_buttons,words[:3]): b.setText(word); b.setEnabled(True)
+            if words:
+                self.suggestion_source=worker.text; self.suggestion_word=words[0]
+                self.show_ghost(worker.text,words[0])
+            self.language_status.setText('Groq suggestions; select a word to complete it.')
+        elif kind=='respond':
+            if error:
+                self.language_status.setText('Groq unavailable. Speaking the original message; no cleanup or generated reply. ' + error + '')
+                self.reply.setText('Crewmate reply unavailable'); spoken=worker.text
+            else:
+                cleaned,reply=result; self.message.setPlainText(cleaned); self.reply.setText('Crewmate reply: '+reply); spoken=reply
+                self.language_status.setText('Message cleaned and reply generated by Groq.')
+            self.speaking=True; self.launch_worker('speak',spoken)
+        elif kind=='speak':
+            self.speaking=False; self.current=self.candidate='SILENCE'; self.count=0
+            self.decoder.reset(); self.decoder.recovering=True; self.decoder.recovery_left=self.recovery.value(); self.decoder.recovery_wait_silence=True
+            if error: self.language_status.setText('Speech failed: '+error)
+    def send(self):
+        text=self.message.toPlainText().strip()
+        if not text: self.info.setText('Nothing to send.'); return
+        if self.launch_worker('respond',text):
+            self.speaking=True; self.reply.setText('Crewmate is thinking…'); self.info.setText('Input paused while the crewmate responds and speaks.')
+    def callback(self,data,frames,timing,status):
+        if status: self.drops+=1
+        try: self.q.put_nowait((data[:,0].copy(),time.perf_counter()))
+        except queue.Full: self.drops+=1
+    def toggle(self):
+        if self.stream: self.stop(); return
+        if self.letter_gap.value()>=self.word_gap.value(): self.info.setText('Word gap must exceed letter gap.'); return
+        self.decoder=Decoder(self.letter_gap.value(),self.word_gap.value(),self.long_breath.value(),self.recovery.value())
+        self.current=self.candidate='SILENCE'; self.count=0
+        self.run_target=self.target.text(); self.run_started=time.perf_counter()
+        try:
+            self.stream=sd.InputStream(device=self.device.currentData(),samplerate=RATE,channels=1,dtype='float32',blocksize=N,callback=self.callback)
+            self.stream.start(); self.device.setEnabled(False); self.start.setText('Stop and log')
+        except Exception as e:
+            if self.stream: self.stream.close(); self.stream=None
+            self.info.setText(str(e))
+    def poll(self):
+        for _ in range(20):
+            try: x,arrival=self.q.get_nowait()
+            except queue.Empty: break
+            if len(x)!=N: self.drops+=1; continue
+            if self.speaking: continue
+            t=time.perf_counter(); label=str(self.model.predict(feature(x).reshape(1,-1))[0]); elapsed=(time.perf_counter()-t)*1000
+            self.times.append((elapsed,(time.perf_counter()-arrival)*1000))
+            if label==self.candidate: self.count+=1
+            else: self.candidate=label; self.count=1
+            if self.count>=3: self.current=label
+            for event,value in self.decoder.advance(self.current):
+                if event=='letter': self.insert(value)
+                elif event=='space': self.accept_word_pause()
+                elif event=='delete': self.delete_letter(); self.info.setText('Deleted last letter. Recover and return to silence.')
+                elif event=='send': self.info.setText('Long exhale detected. Input paused for recovery.'); self.send()
+                elif event=='ready': self.info.setText('Ready after recovery.')
+                elif event=='invalid': self.info.setText('Code too long; pause after 1–4 breaths.')
+            state='RECOVERY' if self.decoder.recovering else self.current
+            self.live.setText(f'{state}  |  code: {self.decoder.code or "—"}  |  compute {elapsed:.1f} ms')
+    def stop(self):
+        self.stream.stop(); self.stream.close(); self.stream=None
+        self.device.setEnabled(True); self.start.setText('Start')
+        if self.times:
+            arr=np.asarray(self.times); self.info.setText(f'Frames: {len(arr)}; compute median {np.median(arr[:,0]):.1f} ms, p95 {np.percentile(arr[:,0],95):.1f} ms; callback-to-result p95 {np.percentile(arr[:,1],95):.1f} ms; faults/drops {self.drops}.')
+            try:
+                import mlflow
+                mlflow.set_tracking_uri('sqlite:///'+(HERE/'breath_mlflow.db').as_posix()); mlflow.set_experiment('breath-live')
+                with mlflow.start_run(run_name='live-inference'):
+                    mlflow.log_params({'window_ms':50,'smoothing_windows':3,'letter_gap_s':self.decoder.letter_gap,'word_gap_s':self.decoder.word_gap,'long_breath_s':self.decoder.long_breath,'recovery_s':self.decoder.recovery,'model':'random_forest'})
+                    metrics={'compute_p50_ms':float(np.median(arr[:,0])), 'compute_p95_ms':float(np.percentile(arr[:,0],95)), 'callback_to_result_p95_ms':float(np.percentile(arr[:,1],95)), 'frames':len(arr),'faults_or_drops':self.drops,'duration_s':time.perf_counter()-self.run_started}
+                    target=self.run_target.strip().casefold(); actual=self.message.toPlainText().strip().casefold()
+                    if target:
+                        metrics.update(target_exact_match=float(actual==target), character_similarity=SequenceMatcher(None,target,actual).ratio(), target_characters=len(target), result_characters=len(actual))
+                    if self.comfort.currentIndex(): metrics['comfort_rating_1_to_5']=self.comfort.currentIndex()
+                    mlflow.log_metrics(metrics)
+            except Exception as e: self.info.setText(self.info.text()+f' MLflow logging failed: {e}')
+        self.times=[]; self.drops=0
+    def closeEvent(self,event):
+        if any(w.isRunning() for w in self.workers):
+            self.info.setText('Wait for the language or speech operation to finish before closing.'); event.ignore(); return
+        if self.stream: self.stop()
+        event.accept()
+
+if __name__=='__main__':
+    import sys
+    if '--train' in sys.argv: train()
+    else:
+        app=Q.QApplication([]); window=Window(); window.show(); app.exec()
+
