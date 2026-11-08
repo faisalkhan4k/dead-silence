@@ -11,8 +11,7 @@ export default function Airlock() {
       <Copy>
         <p>
           UB Hacking 2026, theme &quot;Into the Hackosmos&quot;. Four builders:
-          one on breath recognition and the entity, three on the game and its
-          look.
+          one on breath recognition, three on the game and its look.
         </p>
       </Copy>
       <div className="flex flex-wrap gap-3">

@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { LETTERS as T, ROWS } from "./letters";
+import { CODES, DELETE_CODE, LETTERS as T } from "./letters";
 import { initial, NOISE_LINE, reducer, type Sym } from "./breathState";
 
-const LETTER_GAP = 800;
-const WORD_GAP = 2000;
+const COOL_MS = 1000;
+const WORD_GAP = 3000;
+const SEND_GAP = 5000;
 
 export default function BreathDemo({
   onBreath,
@@ -14,7 +15,7 @@ export default function BreathDemo({
 }) {
   const [st, dispatch] = useReducer(reducer, initial);
   const [hit, setHit] = useState<Sym | null>(null);
-  const timers = useRef<{ letter?: number; word?: number; hit?: number }>({});
+  const timers = useRef<{ hit?: number }>({});
   const onBreathRef = useRef(onBreath);
   useEffect(() => {
     onBreathRef.current = onBreath;
@@ -26,14 +27,24 @@ export default function BreathDemo({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once per breath only
   }, [st.breaths]);
 
-  const breath = useCallback((sym: Sym) => {
-    const t = timers.current;
-    dispatch({ type: "breath", sym });
-    clearTimeout(t.letter);
-    clearTimeout(t.word);
-    t.letter = window.setTimeout(() => dispatch({ type: "letter" }), LETTER_GAP);
-    t.word = window.setTimeout(() => dispatch({ type: "word" }), WORD_GAP);
-  }, []);
+  const breath = useCallback((sym: Sym) => dispatch({ type: "breath", sym }), []);
+
+  // Cooldown after a letter, then silence turns into a word and a send.
+  useEffect(() => {
+    if (!st.cool) return;
+    const id = window.setTimeout(() => dispatch({ type: "ready" }), COOL_MS);
+    return () => clearTimeout(id);
+  }, [st.cool]);
+
+  useEffect(() => {
+    if (!st.breaths) return;
+    const w = window.setTimeout(() => dispatch({ type: "word" }), WORD_GAP);
+    const x = window.setTimeout(() => dispatch({ type: "send" }), SEND_GAP);
+    return () => {
+      clearTimeout(w);
+      clearTimeout(x);
+    };
+  }, [st.breaths]);
 
   const flash = useCallback((sym: Sym) => {
     setHit(sym);
@@ -41,11 +52,7 @@ export default function BreathDemo({
     timers.current.hit = window.setTimeout(() => setHit(null), 120);
   }, []);
 
-  const reset = () => {
-    clearTimeout(timers.current.letter);
-    clearTimeout(timers.current.word);
-    dispatch({ type: "reset" });
-  };
+  const reset = () => dispatch({ type: "reset" });
 
   // Noise decays while you stay quiet.
   useEffect(() => {
@@ -56,17 +63,18 @@ export default function BreathDemo({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "1" || e.key === "2") {
-        breath(e.key);
-        flash(e.key);
+      const el = e.target as HTMLElement | null;
+      if (el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable)) return;
+      const sym = e.code === "Digit1" || e.code === "Numpad1" ? "1" : e.code === "Digit2" || e.code === "Numpad2" ? "2" : null;
+      if (sym) {
+        breath(sym);
+        flash(sym);
       }
     };
     document.addEventListener("keydown", onKey);
     const t = timers.current;
     return () => {
       document.removeEventListener("keydown", onKey);
-      clearTimeout(t.letter);
-      clearTimeout(t.word);
       clearTimeout(t.hit);
     };
   }, [breath, flash]);
@@ -83,7 +91,7 @@ export default function BreathDemo({
         <svg
           viewBox="0 0 220 220"
           role="img"
-          aria-label="Lung ring. Grows on a sniff, shrinks on a puff."
+          aria-label="Lung ring. Grows on an inhale, shrinks on an exhale."
           className="h-[200px] w-[200px]"
         >
           <circle cx="110" cy="110" r="90" fill="none" stroke="#3A3D45" strokeWidth="8" />
@@ -102,7 +110,7 @@ export default function BreathDemo({
         </svg>
 
         <div className="w-full min-w-0 font-mono">
-          <div className="mb-3.5 flex flex-wrap gap-2.5" aria-live="polite">
+          <div className="mb-3.5 flex flex-wrap gap-2.5">
             {[0, 1, 2].map((i) => {
               const on = i === st.words.length && Boolean(st.cur || st.buf);
               const text = st.words[i] || (i === st.words.length ? st.cur : "");
@@ -124,7 +132,6 @@ export default function BreathDemo({
               .split("")
               .map((c) => (c === "1" ? "○" : "●"))
               .join(" ")}
-            {T[st.buf] && <span className="text-ash"> {T[st.buf]}</span>}
           </div>
 
           <div
@@ -143,14 +150,14 @@ export default function BreathDemo({
               style={{ left: `${NOISE_LINE}%` }}
             />
           </div>
-          <div className="text-sm uppercase opacity-80">noise</div>
+          <div className="text-sm uppercase opacity-80">noise (simulated)</div>
 
           <div className="my-4 flex flex-wrap items-center gap-3">
-            <button type="button" aria-label="Sniff, symbol 1" className={keyCls("1")} onClick={() => breath("1")}>
-              1 sniff
+            <button type="button" aria-label="Inhale, symbol 1" className={keyCls("1")} onClick={() => breath("1")}>
+              1 inhale
             </button>
-            <button type="button" aria-label="Puff, symbol 2" className={keyCls("2")} onClick={() => breath("2")}>
-              2 puff
+            <button type="button" aria-label="Exhale, symbol 2" className={keyCls("2")} onClick={() => breath("2")}>
+              2 exhale
             </button>
             <button type="button" className="text-sm text-ember uppercase underline" onClick={reset}>
               clear message
@@ -171,26 +178,15 @@ export default function BreathDemo({
 
       <h3 className="mt-7 mb-2 font-display text-2xl font-extrabold uppercase">Letter table</h3>
       <p className="mb-2 font-mono text-sm opacity-80">
-        Common letters get the shortest codes. 1 = sniff, 2 = puff.
+        Every letter is five breaths. 1 = inhale, 2 = exhale. {DELETE_CODE} deletes.
       </p>
-      <table className="w-full max-w-[760px] border-collapse font-mono text-sm">
-        <tbody>
-          {ROWS.map(({ n, codes }) => (
-            <tr key={n} className="border-b-2 border-rivet align-top">
-              <th className="w-[5.5em] px-2.5 py-1.5 text-left font-normal text-ember uppercase">
-                {n} {n === 1 ? "breath" : "breaths"}
-              </th>
-              <td className="px-2.5 py-1.5">
-                {codes.map((k) => (
-                  <span key={k} className="mr-4 inline-block whitespace-nowrap">
-                    <span className="text-signal">{k}</span> {T[k]}
-                  </span>
-                ))}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ul className="flex max-w-[760px] flex-wrap gap-x-4 gap-y-1.5 font-mono text-sm">
+        {CODES.map((k) => (
+          <li key={k} className="whitespace-nowrap">
+            <span className="text-signal">{k}</span> {T[k]}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function Reactor() {
           <Heading>It hears everything.</Heading>
           <Copy>
             <p>
-              Nobody has seen it. It finds you by sound: footsteps, doors,
+              Design intent: Nobody has seen it. It finds you by sound: footsteps, doors,
               dropped tools, your breathing. It keeps a map of where it last
               heard you, and the odds fade as time passes.
             </p>

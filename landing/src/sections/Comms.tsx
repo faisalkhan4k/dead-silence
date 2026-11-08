@@ -19,7 +19,7 @@ export default function Comms() {
       </Copy>
       <div className="mt-8 border-l-4 border-signal bg-void/70 px-4 py-3 font-mono text-signal">
         <p className="mb-2 text-xs tracking-widest uppercase opacity-80">
-          ● Live call / channel 4
+          ● Scripted call / channel 4
         </p>
         {call.map((line) => (
           <p key={line}>

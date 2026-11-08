@@ -11,8 +11,8 @@ export default function Corridor() {
       <Copy>
         <p>
           Every door on this ship takes a code, and you enter it with your
-          breath. Press <b>1</b> for a sniff and <b>2</b> for a puff, or tap the
-          buttons. Pause 0.8 seconds to lock a letter, 2 seconds to lock a word.
+          breath. Press <b>1</b> for inhale and <b>2</b> for exhale. Five breaths
+          make a letter. This demo simulates the noise meter; it does not listen.
           Past the red line, it hears you.
         </p>
       </Copy>

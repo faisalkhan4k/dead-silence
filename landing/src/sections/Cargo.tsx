@@ -2,7 +2,7 @@ import Room, { Heading } from "@/components/Room";
 
 const rules = [
   "Every door is locked. Earth Command reads you the code.",
-  "You answer with your breath. A sniff is 1, a puff is 2.",
+  "An inhale is 1, an exhale is 2. Five breaths make a letter.",
   "When it is close, breathe the code. Do not speak.",
   "When it is far, your voice is safe. Use it.",
   "Every breath is noise. Keep it short.",

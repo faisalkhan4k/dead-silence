@@ -1,4 +1,4 @@
-import { LETTERS as T } from "./letters";
+import { DELETE_CODE, LETTERS as T } from "./letters";
 
 export type Sym = "1" | "2";
 
@@ -15,12 +15,14 @@ export type State = {
   status: string;
   breaths: number;
   last: Sym | null;
+  cool: boolean;
 };
 
 export type Action =
   | { type: "breath"; sym: Sym }
-  | { type: "letter" }
+  | { type: "ready" }
   | { type: "word" }
+  | { type: "send" }
   | { type: "decay" }
   | { type: "reset" };
 
@@ -31,58 +33,60 @@ export const initial: State = {
   level: 0,
   r: 60,
   lung: "breathe",
-  status: "Try: 1 (E), 2 (T), 11 (A), 22 (N).",
+  status: "Try 11111 for A.",
   breaths: 0,
   last: null,
+  cool: false,
 };
 
-function commitLetter(s: State): State {
-  if (!s.buf) return s;
-  const L = T[s.buf];
+// Fifth breath of a code: lock the letter, or delete on 22121. Then cool down.
+function commitCode(s: State, buf: string): State {
+  const base = { ...s, buf: "", cool: true };
+  if (buf === DELETE_CODE) {
+    if (s.cur) return { ...base, cur: s.cur.slice(0, -1), status: "Deleted." };
+    const last = s.words[s.words.length - 1];
+    if (!last) return { ...base, status: "Nothing to delete." };
+    return { ...base, words: s.words.slice(0, -1), cur: last.slice(0, -1), status: "Deleted." };
+  }
+  const L = T[buf];
   return {
-    ...s,
-    buf: "",
+    ...base,
     cur: L ? s.cur + L : s.cur,
-    status: L ? "Locked " + L + "." : "No letter for " + s.buf + ". Cleared.",
+    status: L ? "Locked " + L + "." : "No letter for " + buf + ". Cleared.",
   };
 }
 
-function commitWord(prev: State): State {
-  const s = commitLetter(prev);
-  if (!s.cur) return s;
-  if (s.words.length >= MAX_WORDS) return { ...s, cur: "" };
-  const words = [...s.words, s.cur];
-  return {
-    ...s,
-    words,
-    cur: "",
-    status:
-      "Word locked: " +
-      s.cur +
-      (words.length === MAX_WORDS ? ". Message full. Clear to start over." : "."),
-  };
+function commitWord(s: State): State {
+  if (!s.cur) return s.buf ? { ...s, buf: "" } : s;
+  if (s.words.length >= MAX_WORDS) return { ...s, buf: "", cur: "", status: "Message full." };
+  return { ...s, buf: "", words: [...s.words, s.cur], cur: "", status: "Word locked: " + s.cur + "." };
 }
 
 export function reducer(s: State, a: Action): State {
   switch (a.type) {
     case "breath": {
-      const buf = (s.buf + a.sym).slice(-4);
-      const level = Math.min(100, s.level + 22);
-      return {
-        ...s,
-        buf,
+      if (s.cool) return s;
+      const buf = (s.buf + a.sym).slice(-5);
+      const level = Math.min(100, s.level + 14);
+      const next: State = {
+        ...(buf.length === 5 ? commitCode(s, buf) : { ...s, buf }),
         r: Math.max(30, Math.min(88, s.r + (a.sym === "1" ? 10 : -10))),
-        lung: a.sym === "1" ? "sniff" : "puff",
+        lung: a.sym === "1" ? "inhale" : "exhale",
         level,
-        status: level > NOISE_LINE ? "Too loud. It heard that." : s.status,
         breaths: s.breaths + 1,
         last: a.sym,
       };
+      return level > NOISE_LINE ? { ...next, status: "Noise meter (simulated): too loud." } : next;
     }
-    case "letter":
-      return commitLetter(s);
+    case "ready":
+      return { ...s, cool: false };
     case "word":
       return commitWord(s);
+    case "send": {
+      const msg = [...s.words, s.cur].filter(Boolean).join(" ");
+      if (!msg) return s;
+      return { ...s, buf: "", cur: "", words: [], status: "Sent: " + msg + ". (demo only)" };
+    }
     case "decay":
       return s.level > 0 ? { ...s, level: Math.max(0, s.level - 6) } : s;
     case "reset":
