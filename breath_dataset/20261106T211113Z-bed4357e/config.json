@@ -1,0 +1,19 @@
+{
+  "task": "breath_binary",
+  "rate": 48000,
+  "labels": [
+    "INHALE",
+    "EXHALE"
+  ],
+  "train_per_label": 20,
+  "test_per_label": 10,
+  "block_size": 10,
+  "feature_version": 1,
+  "speaker": null,
+  "models": [
+    "SVM",
+    "RandomForest",
+    "XGBoost",
+    "LightGBM"
+  ]
+}

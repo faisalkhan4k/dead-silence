@@ -1,0 +1,25 @@
+number,category,background,split,folder,numbered_copy
+1,INHALE,Fan or ambient noise,train,20261108T050004Z-35aebf6f,01_INHALE_FAN.wav
+2,INHALE,Fan or ambient noise,train,20261108T050008Z-d052a0a4,02_INHALE_FAN.wav
+3,INHALE,Fan or ambient noise,train,20261108T050012Z-044f0067,03_INHALE_FAN.wav
+4,INHALE,Fan or ambient noise,train,20261108T050016Z-8ae2f252,04_INHALE_FAN.wav
+5,EXHALE,Fan or ambient noise,train,20261108T050402Z-d6be55e2,05_EXHALE_FAN.wav
+6,EXHALE,Fan or ambient noise,train,20261108T050406Z-d0c16045,06_EXHALE_FAN.wav
+7,EXHALE,Fan or ambient noise,train,20261108T050411Z-d1652753,07_EXHALE_FAN.wav
+8,EXHALE,Fan or ambient noise,train,20261108T050415Z-0217d5df,08_EXHALE_FAN.wav
+9,NO_BREATH,Fan or ambient noise,train,20261108T045934Z-364cbb3f,09_NO_BREATH_FAN.wav
+10,NO_BREATH,Fan or ambient noise,train,20261108T045938Z-5ee84dfd,10_NO_BREATH_FAN.wav
+11,NO_BREATH,Fan or ambient noise,train,20261108T045941Z-cfeb5e18,11_NO_BREATH_FAN.wav
+12,NO_BREATH,Fan or ambient noise,train,20261108T045946Z-8485e9c3,12_NO_BREATH_FAN.wav
+13,INHALE,Talking in background,train,20261108T045127Z-da26336a,13_INHALE_TALKING.wav
+14,INHALE,Talking in background,train,20261108T045138Z-8ba0c7d1,14_INHALE_TALKING.wav
+15,INHALE,Talking in background,train,20261108T045142Z-1bdb7554,15_INHALE_TALKING.wav
+16,INHALE,Talking in background,train,20261108T045146Z-47478809,16_INHALE_TALKING.wav
+17,EXHALE,Talking in background,train,20261108T045727Z-8e077132,17_EXHALE_TALKING.wav
+18,EXHALE,Talking in background,train,20261108T045731Z-b8730295,18_EXHALE_TALKING.wav
+19,EXHALE,Talking in background,train,20261108T045735Z-baf9e198,19_EXHALE_TALKING.wav
+20,EXHALE,Talking in background,train,20261108T045739Z-18fb0faf,20_EXHALE_TALKING.wav
+21,NO_BREATH,Talking in background,train,20261108T045759Z-b08cec0e,21_NO_BREATH_TALKING.wav
+22,NO_BREATH,Talking in background,train,20261108T045802Z-e54d26fe,22_NO_BREATH_TALKING.wav
+23,NO_BREATH,Talking in background,train,20261108T045805Z-abb37a95,23_NO_BREATH_TALKING.wav
+24,NO_BREATH,Talking in background,train,20261108T045808Z-4e883555,24_NO_BREATH_TALKING.wav

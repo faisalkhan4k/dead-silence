@@ -1,0 +1,14 @@
+{
+  "split": "train",
+  "expected_sequence": "DELETE 2",
+  "prompt": "DELETE 2 \u2014 Long inhale (delete), recover naturally, then short exhale when ready.",
+  "started_utc": "2026-11-08T00:15:10.074007+00:00",
+  "rate": 48000,
+  "frames": 245856,
+  "audio_flags": [],
+  "notes": "",
+  "device_id": 1,
+  "event_timestamps": null,
+  "label_type": "sequence-level only; no event boundaries",
+  "warning": "Do not use as frame-level ground truth without annotation."
+}

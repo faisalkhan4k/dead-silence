@@ -1,0 +1,1322 @@
+{
+  "SVM": {
+    "accuracy": 0.95,
+    "top3_accuracy": 1.0,
+    "log_loss": 0.08702448061499393,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "n": 20,
+    "prediction_rule": "argmax of class probabilities",
+    "per_class": {
+      "INHALE": {
+        "precision": 0.9090909090909091,
+        "recall": 1.0,
+        "f1-score": 0.9523809523809523,
+        "support": 10.0
+      },
+      "EXHALE": {
+        "precision": 1.0,
+        "recall": 0.9,
+        "f1-score": 0.9473684210526315,
+        "support": 10.0
+      },
+      "accuracy": 0.95,
+      "macro avg": {
+        "precision": 0.9545454545454546,
+        "recall": 0.95,
+        "f1-score": 0.949874686716792,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 0.9545454545454545,
+        "recall": 0.95,
+        "f1-score": 0.949874686716792,
+        "support": 20.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        10,
+        0
+      ],
+      [
+        1,
+        9
+      ]
+    ],
+    "predictions": [
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\001_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/001_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9809459402389522,
+          "EXHALE": 0.019054059761047792
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\002_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/002_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.029806096953221596,
+          "EXHALE": 0.9701939030467784
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\003_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/003_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9373290712973181,
+          "EXHALE": 0.06267092870268187
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\004_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/004_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.025270206694493026,
+          "EXHALE": 0.974729793305507
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\005_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/005_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.989470588341146,
+          "EXHALE": 0.010529411658854015
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\006_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/006_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.02218627075253453,
+          "EXHALE": 0.9778137292474655
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\007_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/007_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9922143186002957,
+          "EXHALE": 0.007785681399704258
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\008_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/008_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.008883844053179052,
+          "EXHALE": 0.9911161559468209
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\009_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/009_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.7748200548970339,
+          "EXHALE": 0.22517994510296613
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\010_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/010_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.555046933841179,
+          "EXHALE": 0.444953066158821
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\011_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/011_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9879234824727798,
+          "EXHALE": 0.012076517527220165
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\012_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/012_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.082142903695179,
+          "EXHALE": 0.917857096304821
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\013_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/013_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.990975627678423,
+          "EXHALE": 0.009024372321577045
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\014_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/014_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.12710031559075177,
+          "EXHALE": 0.8728996844092483
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\015_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/015_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9897602992368698,
+          "EXHALE": 0.010239700763130188
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\016_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/016_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.009404693529437761,
+          "EXHALE": 0.9905953064705623
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\017_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/017_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9624580048759607,
+          "EXHALE": 0.03754199512403933
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\018_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/018_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.028195844675077814,
+          "EXHALE": 0.9718041553249221
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\019_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/019_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.8678348918654045,
+          "EXHALE": 0.13216510813459548
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\020_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/020_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.014670993382276433,
+          "EXHALE": 0.9853290066177236
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      }
+    ]
+  },
+  "RandomForest": {
+    "accuracy": 1.0,
+    "top3_accuracy": 1.0,
+    "log_loss": 0.06991481088599097,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "n": 20,
+    "prediction_rule": "argmax of class probabilities",
+    "per_class": {
+      "INHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "EXHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        10,
+        0
+      ],
+      [
+        0,
+        10
+      ]
+    ],
+    "predictions": [
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\001_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/001_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9533333333333335,
+          "EXHALE": 0.04666666666666667
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\002_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/002_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.13416666666666668,
+          "EXHALE": 0.8658333333333332
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\003_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/003_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9083333333333333,
+          "EXHALE": 0.09166666666666666
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\004_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/004_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.019166666666666665,
+          "EXHALE": 0.9808333333333333
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\005_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/005_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.98,
+          "EXHALE": 0.02
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\006_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/006_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.013333333333333332,
+          "EXHALE": 0.9866666666666666
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\007_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/007_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9741666666666667,
+          "EXHALE": 0.02583333333333333
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\008_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/008_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.05083333333333333,
+          "EXHALE": 0.9491666666666666
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\009_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/009_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.905,
+          "EXHALE": 0.095
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\010_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/010_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.015,
+          "EXHALE": 0.985
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\011_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/011_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9575000000000001,
+          "EXHALE": 0.0425
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\012_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/012_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.10458333333333332,
+          "EXHALE": 0.8954166666666667
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\013_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/013_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9841666666666665,
+          "EXHALE": 0.01583333333333333
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\014_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/014_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.11333333333333333,
+          "EXHALE": 0.8866666666666666
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\015_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/015_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9483333333333335,
+          "EXHALE": 0.051666666666666666
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\016_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/016_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.0,
+          "EXHALE": 1.0
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\017_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/017_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.8633333333333334,
+          "EXHALE": 0.1366666666666667
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\018_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/018_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.09375,
+          "EXHALE": 0.90625
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\019_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/019_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.7950000000000002,
+          "EXHALE": 0.205
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\020_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/020_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.045,
+          "EXHALE": 0.955
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      }
+    ]
+  },
+  "LightGBM": {
+    "accuracy": 1.0,
+    "top3_accuracy": 1.0,
+    "log_loss": 0.01404052013356082,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "n": 20,
+    "prediction_rule": "argmax of class probabilities",
+    "per_class": {
+      "INHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "EXHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        10,
+        0
+      ],
+      [
+        0,
+        10
+      ]
+    ],
+    "predictions": [
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\001_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/001_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9858849881203376,
+          "EXHALE": 0.014115011879662354
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\002_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/002_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.009872937341151567,
+          "EXHALE": 0.9901270626588484
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\003_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/003_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9826885033723346,
+          "EXHALE": 0.0173114966276654
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\004_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/004_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.015817799311742254,
+          "EXHALE": 0.9841822006882578
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\005_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/005_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9889347347998837,
+          "EXHALE": 0.011065265200116303
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\006_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/006_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.010099592721335253,
+          "EXHALE": 0.9899004072786648
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\007_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/007_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9837428542739741,
+          "EXHALE": 0.01625714572602588
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\008_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/008_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.009872937341151567,
+          "EXHALE": 0.9901270626588484
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\009_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/009_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9843484621398562,
+          "EXHALE": 0.015651537860143838
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\010_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/010_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.01520765891277621,
+          "EXHALE": 0.9847923410872238
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\011_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/011_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.983691908235074,
+          "EXHALE": 0.01630809176492598
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\012_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/012_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.010422296366667274,
+          "EXHALE": 0.9895777036333328
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\013_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/013_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9871034546718676,
+          "EXHALE": 0.012896545328132447
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\014_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/014_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.009872937341151567,
+          "EXHALE": 0.9901270626588484
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\015_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/015_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9881167303594346,
+          "EXHALE": 0.011883269640565408
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\016_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/016_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.009872937341151567,
+          "EXHALE": 0.9901270626588484
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\017_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/017_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9811151147857091,
+          "EXHALE": 0.01888488521429088
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\018_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/018_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.01594328136369318,
+          "EXHALE": 0.9840567186363068
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\019_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/019_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.9758093465601787,
+          "EXHALE": 0.024190653439821297
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\020_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/020_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.01316400476482726,
+          "EXHALE": 0.9868359952351727
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      }
+    ]
+  },
+  "XGBoost": {
+    "accuracy": 1.0,
+    "top3_accuracy": 1.0,
+    "log_loss": 0.05315206314096153,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "n": 20,
+    "prediction_rule": "argmax of class probabilities",
+    "per_class": {
+      "INHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "EXHALE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        10,
+        0
+      ],
+      [
+        0,
+        10
+      ]
+    ],
+    "predictions": [
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\001_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/001_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\002_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/002_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\003_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/003_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\004_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/004_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\005_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/005_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\006_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/006_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\007_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/007_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\008_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/008_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\009_INHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/009_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211519Z-eb2f1571\\010_EXHALE.wav",
+        "recording_id": "20261106T211519Z-eb2f1571/010_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\011_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/011_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\012_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/012_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\013_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/013_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\014_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/014_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\015_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/015_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\016_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/016_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\017_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/017_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\018_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/018_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\019_INHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/019_INHALE.wav",
+        "actual": "INHALE",
+        "predicted": "INHALE",
+        "probabilities": {
+          "INHALE": 0.948235809803009,
+          "EXHALE": 0.05176419019699097
+        },
+        "top3": [
+          "INHALE",
+          "EXHALE"
+        ]
+      },
+      {
+        "recording": "C:\\Users\\faisa\\Downloads\\Projects\\RL Voice AI\\apps\\acoustic-sensing\\breath_dataset\\20261106T211113Z-bed4357e\\20261106T211605Z-2597d7f6\\020_EXHALE.wav",
+        "recording_id": "20261106T211605Z-2597d7f6/020_EXHALE.wav",
+        "actual": "EXHALE",
+        "predicted": "EXHALE",
+        "probabilities": {
+          "INHALE": 0.051764216274023056,
+          "EXHALE": 0.948235809803009
+        },
+        "top3": [
+          "EXHALE",
+          "INHALE"
+        ]
+      }
+    ]
+  }
+}

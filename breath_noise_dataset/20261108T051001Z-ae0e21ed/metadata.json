@@ -1,0 +1,16 @@
+{
+  "category": "EXHALE",
+  "background": "Talking in background",
+  "split": "held-out",
+  "utc": "2026-11-08T05:09:58.017230+00:00",
+  "rate": 48000,
+  "frames": 156000,
+  "peak": 0.015838623046875,
+  "clipped": false,
+  "audio_flags": [],
+  "device_id": 1,
+  "device_name": "Microphone (Realtek(R) Audio)",
+  "notes": "",
+  "label_type": "clip-level intended category; no event boundaries",
+  "warning": "Inhale/exhale clips may include pauses. Do not use as frame-level labels without annotation."
+}

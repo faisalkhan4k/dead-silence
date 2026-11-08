@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "audio": "mic.wav",
+  "sample_rate": 48000,
+  "total_samples": 82368,
+  "segments": [
+    {
+      "start_sample": 43200,
+      "end_sample": 72000,
+      "label": "INHALE"
+    }
+  ],
+  "saved_utc": "2026-11-08T08:08:09.226830+00:00"
+}

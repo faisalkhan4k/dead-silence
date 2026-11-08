@@ -1,0 +1,26 @@
+{
+  "window_accuracy_weak_labels": 0.672,
+  "labels": [
+    "SILENCE",
+    "INHALE",
+    "EXHALE"
+  ],
+  "confusion_matrix": [
+    [
+      252,
+      27,
+      1
+    ],
+    [
+      165,
+      181,
+      14
+    ],
+    [
+      103,
+      18,
+      239
+    ]
+  ],
+  "test_windows": 1000
+}

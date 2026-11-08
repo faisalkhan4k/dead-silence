@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "audio": "mic.wav",
+  "sample_rate": 48000,
+  "total_samples": 84864,
+  "segments": [
+    {
+      "start_sample": 40800,
+      "end_sample": 84000,
+      "label": "INHALE"
+    }
+  ],
+  "saved_utc": "2026-11-08T06:52:55.121732+00:00",
+  "review_status": "PROVISIONAL_AUTOMATIC",
+  "method": "amplitude_peak_heuristic_v1",
+  "warning": "Not human verified. Background sounds can be louder than breath; do not treat as ground truth."
+}

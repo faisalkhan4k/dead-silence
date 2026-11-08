@@ -1,0 +1,155 @@
+{
+  "warning": "Original action-window labels and unreviewed noisy held-out amplitude markers are weak. No-breath training clips have whole-clip intended labels. Held-out metrics are proxies, not verified accuracy. Windows from one clip are correlated. Candidate is not deployed.",
+  "training_selection": "reviewed 16 breath clips and 8 clip-level no-breath labels plus original training",
+  "train_clips": 24,
+  "test_clips": 44,
+  "new_train_windows_by_label": {
+    "INHALE": 83,
+    "EXHALE": 95,
+    "SILENCE": 191
+  },
+  "new_test_windows_by_label": {
+    "INHALE": 398,
+    "SILENCE": 600,
+    "EXHALE": 154
+  },
+  "old_holdout": {
+    "original": {
+      "window_accuracy": 0.672,
+      "balanced_accuracy": 0.6888888888888888,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          252,
+          27,
+          1
+        ],
+        [
+          165,
+          181,
+          14
+        ],
+        [
+          103,
+          18,
+          239
+        ]
+      ],
+      "windows": 1000
+    },
+    "candidate": {
+      "window_accuracy": 0.668,
+      "balanced_accuracy": 0.6828042328042327,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          243,
+          36,
+          1
+        ],
+        [
+          159,
+          187,
+          14
+        ],
+        [
+          97,
+          25,
+          238
+        ]
+      ],
+      "windows": 1000
+    }
+  },
+  "noisy_holdout_weak": {
+    "original": {
+      "window_accuracy": 0.5980902777777778,
+      "balanced_accuracy": 0.6005495007505058,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          552,
+          35,
+          13
+        ],
+        [
+          381,
+          2,
+          15
+        ],
+        [
+          19,
+          0,
+          135
+        ]
+      ],
+      "windows": 1152
+    },
+    "active": {
+      "window_accuracy": 0.6805555555555556,
+      "balanced_accuracy": 0.6378831386369074,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          570,
+          26,
+          4
+        ],
+        [
+          267,
+          107,
+          24
+        ],
+        [
+          28,
+          19,
+          107
+        ]
+      ],
+      "windows": 1152
+    },
+    "candidate": {
+      "window_accuracy": 0.7048611111111112,
+      "balanced_accuracy": 0.7151920134583452,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          539,
+          23,
+          38
+        ],
+        [
+          244,
+          132,
+          22
+        ],
+        [
+          3,
+          10,
+          141
+        ]
+      ],
+      "windows": 1152
+    }
+  }
+}

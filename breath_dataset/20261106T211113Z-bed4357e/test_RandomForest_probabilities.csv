@@ -1,0 +1,21 @@
+recording,actual,predicted,p_INHALE,p_EXHALE
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\001_INHALE.wav,INHALE,INHALE,0.9533333333333335,0.04666666666666667
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\002_EXHALE.wav,EXHALE,EXHALE,0.13416666666666668,0.8658333333333332
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\003_INHALE.wav,INHALE,INHALE,0.9083333333333333,0.09166666666666666
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\004_EXHALE.wav,EXHALE,EXHALE,0.019166666666666665,0.9808333333333333
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\005_INHALE.wav,INHALE,INHALE,0.98,0.02
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\006_EXHALE.wav,EXHALE,EXHALE,0.013333333333333332,0.9866666666666666
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\007_INHALE.wav,INHALE,INHALE,0.9741666666666667,0.02583333333333333
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\008_EXHALE.wav,EXHALE,EXHALE,0.05083333333333333,0.9491666666666666
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\009_INHALE.wav,INHALE,INHALE,0.905,0.095
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211519Z-eb2f1571\010_EXHALE.wav,EXHALE,EXHALE,0.015,0.985
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\011_INHALE.wav,INHALE,INHALE,0.9575000000000001,0.0425
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\012_EXHALE.wav,EXHALE,EXHALE,0.10458333333333332,0.8954166666666667
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\013_INHALE.wav,INHALE,INHALE,0.9841666666666665,0.01583333333333333
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\014_EXHALE.wav,EXHALE,EXHALE,0.11333333333333333,0.8866666666666666
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\015_INHALE.wav,INHALE,INHALE,0.9483333333333335,0.051666666666666666
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\016_EXHALE.wav,EXHALE,EXHALE,0.0,1.0
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\017_INHALE.wav,INHALE,INHALE,0.8633333333333334,0.1366666666666667
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\018_EXHALE.wav,EXHALE,EXHALE,0.09375,0.90625
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\019_INHALE.wav,INHALE,INHALE,0.7950000000000002,0.205
+C:\Users\faisa\Downloads\Projects\RL Voice AI\apps\acoustic-sensing\breath_dataset\20261106T211113Z-bed4357e\20261106T211605Z-2597d7f6\020_EXHALE.wav,EXHALE,EXHALE,0.045,0.955

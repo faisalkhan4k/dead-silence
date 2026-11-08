@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "audio": "mic.wav",
+  "sample_rate": 48000,
+  "total_samples": 199680,
+  "segments": [
+    {
+      "start_sample": 0,
+      "end_sample": 199680,
+      "label": "NO_BREATH"
+    }
+  ],
+  "saved_utc": "2026-11-08T06:52:55.223861+00:00",
+  "review_status": "PROVISIONAL_AUTOMATIC",
+  "method": "whole_clip_intended_no_breath",
+  "warning": "Not human verified. Background sounds can be louder than breath; do not treat as ground truth."
+}

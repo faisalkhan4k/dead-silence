@@ -1,0 +1,14 @@
+{
+  "split": "train",
+  "expected_sequence": "2 2 1",
+  "prompt": "2 2 1 \u2014 Two short exhales, then a short inhale.",
+  "started_utc": "2026-11-08T00:14:43.411155+00:00",
+  "rate": 48000,
+  "frames": 164736,
+  "audio_flags": [],
+  "notes": "",
+  "device_id": 1,
+  "event_timestamps": null,
+  "label_type": "sequence-level only; no event boundaries",
+  "warning": "Do not use as frame-level ground truth without annotation."
+}

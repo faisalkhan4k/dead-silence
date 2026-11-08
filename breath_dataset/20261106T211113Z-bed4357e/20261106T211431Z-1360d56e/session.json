@@ -1,0 +1,38 @@
+{
+  "session_id": "20261106T211431Z-1360d56e",
+  "role": "check",
+  "utc": "2026-11-06T21:14:26.790331+00:00",
+  "input": {
+    "id": 1,
+    "name": "Microphone (Realtek(R) Audio)",
+    "host": "MME",
+    "host_id": 0,
+    "inputs": 2,
+    "outputs": 0,
+    "default_rate": 44100.0
+  },
+  "output": null,
+  "config": {
+    "task": "breath_binary",
+    "rate": 48000,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "train_per_label": 20,
+    "test_per_label": 10,
+    "block_size": 10,
+    "feature_version": 1,
+    "speaker": null,
+    "models": [
+      "SVM",
+      "RandomForest",
+      "XGBoost",
+      "LightGBM"
+    ]
+  },
+  "notes": "breathiing into mic ",
+  "complete": true,
+  "audio_flags": [],
+  "stream_mode": "input-only"
+}

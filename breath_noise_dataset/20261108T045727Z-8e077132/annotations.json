@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "audio": "mic.wav",
+  "sample_rate": 48000,
+  "total_samples": 72384,
+  "segments": [
+    {
+      "start_sample": 31276,
+      "end_sample": 67554,
+      "label": "EXHALE"
+    }
+  ],
+  "saved_utc": "2026-11-08T08:43:32.591087+00:00"
+}

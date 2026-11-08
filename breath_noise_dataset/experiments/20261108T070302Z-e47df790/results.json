@@ -1,0 +1,127 @@
+{
+  "warning": "All old action-window labels and new amplitude markers are weak; noisy held-out metrics are proxy estimates, not verified accuracy. Windows from the same clip are correlated. Candidate is not deployed.",
+  "train_clips": 43,
+  "test_clips": 44,
+  "new_train_windows_by_label": {
+    "INHALE": 164,
+    "EXHALE": 118,
+    "SILENCE": 446
+  },
+  "new_test_windows_by_label": {
+    "INHALE": 398,
+    "SILENCE": 600,
+    "EXHALE": 154
+  },
+  "old_holdout": {
+    "original": {
+      "window_accuracy": 0.672,
+      "balanced_accuracy": 0.6888888888888888,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          252,
+          27,
+          1
+        ],
+        [
+          165,
+          181,
+          14
+        ],
+        [
+          103,
+          18,
+          239
+        ]
+      ],
+      "windows": 1000
+    },
+    "candidate": {
+      "window_accuracy": 0.641,
+      "balanced_accuracy": 0.637962962962963,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          168,
+          111,
+          1
+        ],
+        [
+          111,
+          235,
+          14
+        ],
+        [
+          75,
+          47,
+          238
+        ]
+      ],
+      "windows": 1000
+    }
+  },
+  "noisy_holdout_weak": {
+    "original": {
+      "window_accuracy": 0.5980902777777778,
+      "balanced_accuracy": 0.6005495007505058,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          552,
+          35,
+          13
+        ],
+        [
+          381,
+          2,
+          15
+        ],
+        [
+          19,
+          0,
+          135
+        ]
+      ],
+      "windows": 1152
+    },
+    "candidate": {
+      "window_accuracy": 0.6805555555555556,
+      "balanced_accuracy": 0.6378831386369074,
+      "labels": [
+        "SILENCE",
+        "INHALE",
+        "EXHALE"
+      ],
+      "confusion_matrix": [
+        [
+          570,
+          26,
+          4
+        ],
+        [
+          267,
+          107,
+          24
+        ],
+        [
+          28,
+          19,
+          107
+        ]
+      ],
+      "windows": 1152
+    }
+  }
+}

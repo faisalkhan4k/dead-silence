@@ -1,0 +1,233 @@
+{
+  "session_id": "20261106T211519Z-eb2f1571",
+  "role": "test",
+  "utc": "2026-11-06T21:14:35.860107+00:00",
+  "input": {
+    "id": 1,
+    "name": "Microphone (Realtek(R) Audio)",
+    "host": "MME",
+    "host_id": 0,
+    "inputs": 2,
+    "outputs": 0,
+    "default_rate": 44100.0
+  },
+  "output": null,
+  "config": {
+    "task": "breath_binary",
+    "rate": 48000,
+    "labels": [
+      "INHALE",
+      "EXHALE"
+    ],
+    "train_per_label": 20,
+    "test_per_label": 10,
+    "block_size": 10,
+    "feature_version": 1,
+    "speaker": null,
+    "models": [
+      "SVM",
+      "RandomForest",
+      "XGBoost",
+      "LightGBM"
+    ]
+  },
+  "notes": "breathiing into mic ",
+  "complete": true,
+  "audio_flags": [],
+  "stream_mode": "input-only",
+  "seed": 2840922925,
+  "trial_order": [
+    [
+      1,
+      "INHALE"
+    ],
+    [
+      2,
+      "EXHALE"
+    ],
+    [
+      3,
+      "INHALE"
+    ],
+    [
+      4,
+      "EXHALE"
+    ],
+    [
+      5,
+      "INHALE"
+    ],
+    [
+      6,
+      "EXHALE"
+    ],
+    [
+      7,
+      "INHALE"
+    ],
+    [
+      8,
+      "EXHALE"
+    ],
+    [
+      9,
+      "INHALE"
+    ],
+    [
+      10,
+      "EXHALE"
+    ]
+  ],
+  "prompt_observations": [
+    {
+      "trial": 1,
+      "stage": 0,
+      "input_frame": 96096
+    },
+    {
+      "trial": 1,
+      "stage": 1,
+      "input_frame": 144768
+    },
+    {
+      "trial": 1,
+      "stage": 2,
+      "input_frame": 240864
+    },
+    {
+      "trial": 2,
+      "stage": 0,
+      "input_frame": 288288
+    },
+    {
+      "trial": 2,
+      "stage": 1,
+      "input_frame": 336960
+    },
+    {
+      "trial": 2,
+      "stage": 2,
+      "input_frame": 433056
+    },
+    {
+      "trial": 3,
+      "stage": 0,
+      "input_frame": 480480
+    },
+    {
+      "trial": 3,
+      "stage": 1,
+      "input_frame": 529152
+    },
+    {
+      "trial": 3,
+      "stage": 2,
+      "input_frame": 624000
+    },
+    {
+      "trial": 4,
+      "stage": 0,
+      "input_frame": 673920
+    },
+    {
+      "trial": 4,
+      "stage": 1,
+      "input_frame": 720096
+    },
+    {
+      "trial": 4,
+      "stage": 2,
+      "input_frame": 817440
+    },
+    {
+      "trial": 5,
+      "stage": 0,
+      "input_frame": 864864
+    },
+    {
+      "trial": 5,
+      "stage": 1,
+      "input_frame": 912288
+    },
+    {
+      "trial": 5,
+      "stage": 2,
+      "input_frame": 1008384
+    },
+    {
+      "trial": 6,
+      "stage": 0,
+      "input_frame": 1057056
+    },
+    {
+      "trial": 6,
+      "stage": 1,
+      "input_frame": 1104480
+    },
+    {
+      "trial": 6,
+      "stage": 2,
+      "input_frame": 1200576
+    },
+    {
+      "trial": 7,
+      "stage": 0,
+      "input_frame": 1248000
+    },
+    {
+      "trial": 7,
+      "stage": 1,
+      "input_frame": 1296672
+    },
+    {
+      "trial": 7,
+      "stage": 2,
+      "input_frame": 1392768
+    },
+    {
+      "trial": 8,
+      "stage": 0,
+      "input_frame": 1441440
+    },
+    {
+      "trial": 8,
+      "stage": 1,
+      "input_frame": 1488864
+    },
+    {
+      "trial": 8,
+      "stage": 2,
+      "input_frame": 1584960
+    },
+    {
+      "trial": 9,
+      "stage": 0,
+      "input_frame": 1632384
+    },
+    {
+      "trial": 9,
+      "stage": 1,
+      "input_frame": 1682304
+    },
+    {
+      "trial": 9,
+      "stage": 2,
+      "input_frame": 1778400
+    },
+    {
+      "trial": 10,
+      "stage": 0,
+      "input_frame": 1825824
+    },
+    {
+      "trial": 10,
+      "stage": 1,
+      "input_frame": 1872000
+    },
+    {
+      "trial": 10,
+      "stage": 2,
+      "input_frame": 1968096
+    }
+  ]
+}

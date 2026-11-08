@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "description": "Four training clips per category and background; original recordings remain unchanged.",
+  "clips": [
+    {
+      "number": 1,
+      "folder": "20261108T050004Z-35aebf6f",
+      "category": "INHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "01_INHALE_FAN.wav"
+    },
+    {
+      "number": 2,
+      "folder": "20261108T050008Z-d052a0a4",
+      "category": "INHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "02_INHALE_FAN.wav"
+    },
+    {
+      "number": 3,
+      "folder": "20261108T050012Z-044f0067",
+      "category": "INHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "03_INHALE_FAN.wav"
+    },
+    {
+      "number": 4,
+      "folder": "20261108T050016Z-8ae2f252",
+      "category": "INHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "04_INHALE_FAN.wav"
+    },
+    {
+      "number": 5,
+      "folder": "20261108T050402Z-d6be55e2",
+      "category": "EXHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "05_EXHALE_FAN.wav"
+    },
+    {
+      "number": 6,
+      "folder": "20261108T050406Z-d0c16045",
+      "category": "EXHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "06_EXHALE_FAN.wav"
+    },
+    {
+      "number": 7,
+      "folder": "20261108T050411Z-d1652753",
+      "category": "EXHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "07_EXHALE_FAN.wav"
+    },
+    {
+      "number": 8,
+      "folder": "20261108T050415Z-0217d5df",
+      "category": "EXHALE",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "08_EXHALE_FAN.wav"
+    },
+    {
+      "number": 9,
+      "folder": "20261108T045934Z-364cbb3f",
+      "category": "NO_BREATH",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "09_NO_BREATH_FAN.wav"
+    },
+    {
+      "number": 10,
+      "folder": "20261108T045938Z-5ee84dfd",
+      "category": "NO_BREATH",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "10_NO_BREATH_FAN.wav"
+    },
+    {
+      "number": 11,
+      "folder": "20261108T045941Z-cfeb5e18",
+      "category": "NO_BREATH",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "11_NO_BREATH_FAN.wav"
+    },
+    {
+      "number": 12,
+      "folder": "20261108T045946Z-8485e9c3",
+      "category": "NO_BREATH",
+      "background": "Fan or ambient noise",
+      "split": "train",
+      "numbered_copy": "12_NO_BREATH_FAN.wav"
+    },
+    {
+      "number": 13,
+      "folder": "20261108T045127Z-da26336a",
+      "category": "INHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "13_INHALE_TALKING.wav"
+    },
+    {
+      "number": 14,
+      "folder": "20261108T045138Z-8ba0c7d1",
+      "category": "INHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "14_INHALE_TALKING.wav"
+    },
+    {
+      "number": 15,
+      "folder": "20261108T045142Z-1bdb7554",
+      "category": "INHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "15_INHALE_TALKING.wav"
+    },
+    {
+      "number": 16,
+      "folder": "20261108T045146Z-47478809",
+      "category": "INHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "16_INHALE_TALKING.wav"
+    },
+    {
+      "number": 17,
+      "folder": "20261108T045727Z-8e077132",
+      "category": "EXHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "17_EXHALE_TALKING.wav"
+    },
+    {
+      "number": 18,
+      "folder": "20261108T045731Z-b8730295",
+      "category": "EXHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "18_EXHALE_TALKING.wav"
+    },
+    {
+      "number": 19,
+      "folder": "20261108T045735Z-baf9e198",
+      "category": "EXHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "19_EXHALE_TALKING.wav"
+    },
+    {
+      "number": 20,
+      "folder": "20261108T045739Z-18fb0faf",
+      "category": "EXHALE",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "20_EXHALE_TALKING.wav"
+    },
+    {
+      "number": 21,
+      "folder": "20261108T045759Z-b08cec0e",
+      "category": "NO_BREATH",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "21_NO_BREATH_TALKING.wav"
+    },
+    {
+      "number": 22,
+      "folder": "20261108T045802Z-e54d26fe",
+      "category": "NO_BREATH",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "22_NO_BREATH_TALKING.wav"
+    },
+    {
+      "number": 23,
+      "folder": "20261108T045805Z-abb37a95",
+      "category": "NO_BREATH",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "23_NO_BREATH_TALKING.wav"
+    },
+    {
+      "number": 24,
+      "folder": "20261108T045808Z-4e883555",
+      "category": "NO_BREATH",
+      "background": "Talking in background",
+      "split": "train",
+      "numbered_copy": "24_NO_BREATH_TALKING.wav"
+    }
+  ]
+}
