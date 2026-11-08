@@ -3,7 +3,7 @@
 A Windows headset-microphone prototype for detecting inhale/exhale in 50 ms windows and using breath codes to enter letters. It includes guided recording, model training, adjustable timing, local MLflow metrics, optional Gemini text assistance and ElevenLabs speech output. This is experimental and is not a reliable assistive communication system.
 
 ## Setup
-
+0. https://drive.google.com/drive/folders/1rPG-6U4DU_wjhdYJCrbjuR_Y10PCDWbZ?usp=sharing Game Files
 1. Install Python 3.13 and create a virtual environment: `py -3.13 -m venv .venv`.
 2. Run `.venv\Scripts\python.exe -m pip install -r requirements.txt`.
 3. Copy `.env.example` to `.env` and add `GEMINI_API_KEY` if using text suggestions and replies. The application sends text to Gemini, not microphone audio. For speech, set `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` in `.env` and choose your headset as the default Windows output device. `ELEVENLABS_MODEL_ID` is optional and defaults to `eleven_flash_v2_5`. The default language model is `gemini-3.5-flash-lite`; set `GEMINI_MODEL` in `.env` to choose another available model.
