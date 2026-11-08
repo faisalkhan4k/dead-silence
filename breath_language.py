@@ -38,10 +38,25 @@ def generate(prompt, *, json_output=False):
 
 
 def suggestions(text):
-    prompt = ('Suggest up to 3 possible next words or completions for the user message below. '
-              'If the final word is unfinished, every suggestion must start with that word. '
-              'Output only single words, one per line; no numbering or punctuation. Message:\n' + text[-500:])
-    return generate(prompt)
+    text = text[-500:]
+    match = re.search(r'[A-Za-z]+$', text)
+    prefix = match.group() if match else ''
+    prompt = ('Suggest up to three likely next words or completions for the user message. '
+              'Return only a JSON array of complete single English words, not word fragments. '
+              'If a prefix is supplied, every word must start with that prefix; '
+              'for prefix "l", return "left", never the suffix "eft". '
+              'Return [] if no good suggestion is available. '
+              'Prefix: ' + json.dumps(prefix) + '\nMessage: ' + json.dumps(text))
+    values = json.loads(generate(prompt, json_output=True))
+    if not isinstance(values, list):
+        raise ValueError('Gemini returned suggestions in an unexpected format.')
+    words = []
+    for value in values:
+        if (isinstance(value, str) and re.fullmatch(r'[A-Za-z]+', value)
+                and value.lower().startswith(prefix.lower())
+                and value.lower() not in {word.lower() for word in words}):
+            words.append(value)
+    return '\n'.join(words[:3])
 
 
 def respond(text):

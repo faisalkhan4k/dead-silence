@@ -20,15 +20,25 @@ class GeminiLanguageTests(unittest.TestCase):
     @patch('breath_language.urllib.request.urlopen')
     def test_request_uses_header_and_extracts_output(self, urlopen):
         urlopen.return_value = FakeResponse({'candidates': [{'content': {'parts': [
-            {'text': 'private thought', 'thought': True}, {'text': 'left'}, {'text': '\nright'}
+            {'text': 'private thought', 'thought': True}, {'text': '[\"left\",'}, {'text': '\"light\"]'}
         ]}}]})
-        self.assertEqual(language.suggestions('move l'), 'left\nright')
+        self.assertEqual(language.suggestions('move l'), 'left\nlight')
         request = urlopen.call_args.args[0]
         body = json.loads(request.data)
         self.assertEqual(request.full_url, 'https://generativelanguage.googleapis.com/v1beta/models/test-model:generateContent')
         self.assertNotIn('test-key', request.full_url)
         self.assertEqual(request.get_header('X-goog-api-key'), 'test-key')
         self.assertIn('move l', body['contents'][0]['parts'][0]['text'])
+
+    @patch.dict(os.environ, {'GEMINI_API_KEY': 'test-key'}, clear=True)
+    @patch('breath_language.urllib.request.urlopen')
+    def test_suggestions_reject_suffixes_nonwords_and_duplicates(self, urlopen):
+        urlopen.return_value = FakeResponse({'candidates': [{'content': {'parts': [
+            {'text': '["eft", "left", "Left", "light", "l-1"]'}
+        ]}}]})
+        self.assertEqual(language.suggestions('move l'), 'left\nlight')
+        body = json.loads(urlopen.call_args.args[0].data)
+        self.assertEqual(body['generationConfig']['responseMimeType'], 'application/json')
 
     @patch.dict(os.environ, {'GEMINI_API_KEY': 'test-key'}, clear=True)
     @patch('breath_language.urllib.request.urlopen')

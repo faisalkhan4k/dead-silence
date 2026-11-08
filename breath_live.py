@@ -147,7 +147,7 @@ class Window(Q.QWidget):
     def text_changed(self):
         self.suggestion_source=None; self.suggestion_word=None; self.ghost.clear()
         for button in self.suggestion_buttons: button.setEnabled(False); button.setText('—')
-        self.suggest_timer.start(900)
+        self.suggest_timer.start(150)
     def show_ghost(self, text, word):
         prefix=re.search(r'[A-Za-z]+$',text)
         if prefix and word.lower().startswith(prefix.group().lower()) and len(word)>len(prefix.group()):
@@ -182,7 +182,11 @@ class Window(Q.QWidget):
     def request_suggestions(self):
         text=self.message.toPlainText()
         for b in self.suggestion_buttons: b.setEnabled(False); b.setText('—')
-        if text.strip() and not self.speaking: self.launch_worker('suggest',text)
+        if text.strip() and not self.speaking:
+            if self.launch_worker('suggest',text):
+                self.language_status.setText('Asking Gemini for a suggestion…')
+            else:
+                self.language_status.setText('Waiting for the previous suggestion…')
     def worker_done(self,worker,kind,result,error):
         if kind=='suggest':
             if worker.text!=self.message.toPlainText(): self.suggest_timer.start(300); return
@@ -196,7 +200,10 @@ class Window(Q.QWidget):
             if words:
                 self.suggestion_source=worker.text; self.suggestion_word=words[0]
                 self.show_ghost(worker.text,words[0])
-            self.language_status.setText('Gemini suggestions; select a word to complete it.')
+            if words:
+                self.language_status.setText('Gemini suggestions ready; the word pause accepts the shown completion.')
+            else:
+                self.language_status.setText('No matching suggestion yet; try another letter.')
         elif kind=='respond':
             if error:
                 self.language_status.setText('Gemini unavailable. Speaking the original message; no cleanup or generated reply. ' + error + '')
