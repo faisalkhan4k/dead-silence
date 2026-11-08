@@ -95,3 +95,21 @@ a {
     transition: none !important;
   }
 }
+
+/* 3D scene on: content floats over the fixed canvas */
+main {
+  position: relative;
+  z-index: 1;
+}
+html[data-scene="on"] #exterior svg,
+html[data-scene="on"] section {
+  background: transparent;
+}
+html[data-scene="on"] #exterior svg {
+  display: none;
+}
+html[data-scene="on"] .panel {
+  background: rgb(20 14 12 / 0.78);
+  padding-block: 1.25rem;
+  padding-right: 1.25rem;
+}

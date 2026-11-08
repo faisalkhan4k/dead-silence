@@ -35,7 +35,7 @@ export default function Exterior() {
         </g>
       </svg>
       <div className="relative mx-auto w-full max-w-[1040px] px-4 pt-32 pb-[12vh]">
-        <div className="border-l border-plank pl-5 sm:pl-8">
+        <div className="panel border-l border-plank pl-5 sm:pl-8">
           <h1 className="text-[clamp(3.25rem,12vw,8rem)] leading-[0.95] font-bold tracking-[-0.03em] [font-variation-settings:'opsz'_144]">
             Dead Silence
           </h1>

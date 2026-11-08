@@ -1,5 +1,5 @@
 import Room, { Heading } from "@/components/Room";
-import BreathDemo from "@/components/BreathDemo";
+import HallBreath from "@/components/HallBreath";
 
 export default function Hall() {
   return (
@@ -10,7 +10,7 @@ export default function Hall() {
         Pause 0.8 seconds to lock a letter, 2 seconds to lock a word. Watch the
         noise meter: past the red line, it hears you.
       </p>
-      <BreathDemo />
+      <HallBreath />
     </Room>
   );
 }

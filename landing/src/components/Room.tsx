@@ -16,7 +16,7 @@ export default function Room({
       className={`relative flex min-h-svh items-end py-24 ${className}`}
     >
       <div className="relative mx-auto w-full max-w-[1040px] px-4">
-        <div className="border-l border-plank pl-5 sm:pl-8">{children}</div>
+        <div className="panel border-l border-plank pl-5 sm:pl-8">{children}</div>
       </div>
     </section>
   );
