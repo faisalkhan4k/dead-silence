@@ -75,7 +75,11 @@ class Annotator(Q.QWidget):
                 if not audio.exists():continue
                 if self.filter.currentIndex()==1 and annot.exists():continue
                 if self.filter.currentIndex()==2 and not annot.exists():continue
-                self.entries.append((meta_path.parent,meta));self.clips.addItem(f"{'✓' if annot.exists() else '○'}  {meta.get('split','?')} | {meta.get('category','?')} | {meta.get('background','?')} | {meta_path.parent.name[-8:]}")
+                flag='○'
+                if annot.exists():
+                    saved=json.loads(annot.read_text(encoding='utf-8'))
+                    flag='AUTO' if saved.get('review_status')=='PROVISIONAL_AUTOMATIC' else '✓'
+                self.entries.append((meta_path.parent,meta));self.clips.addItem(f"{flag}  {meta.get('split','?')} | {meta.get('category','?')} | {meta.get('background','?')} | {meta_path.parent.name[-8:]}")
             except (ValueError,OSError):continue
         self.updating=False;self.status.setText(f'{len(self.entries)} recordings. Select a clip to begin.')
     def open_clip(self,index):
@@ -99,7 +103,10 @@ class Annotator(Q.QWidget):
         self.plot.setXRange(0,duration,padding=.01);self.plot.setYRange(-1,1,padding=.05)
         self.region.setBounds([0,duration]);self.region.setRegion((0,min(1,duration)))
         self.info.setText(f"Intended clip: {meta.get('category')} • {meta.get('background')} • {meta.get('split')} • {duration:.2f} s")
-        self.refresh_markers();self.status.setText('Listen, drag the shaded region, then mark the interval. Unmarked audio stays unlabeled.')
+        self.refresh_markers()
+        if data.get('review_status')=='PROVISIONAL_AUTOMATIC':
+            self.status.setText('AUTO estimate — not verified. Background noise can be marked as a breath. Listen before relying on it.')
+        else:self.status.setText('Listen, drag the shaded region, then mark the interval. Unmarked audio stays unlabeled.')
     def selection_changed(self):
         if self.rate:self.selection.setText('Selection: %.2f–%.2f s'%tuple(self.region.getRegion()))
     def selected_indices(self):
@@ -156,7 +163,7 @@ class Annotator(Q.QWidget):
         except OSError as error:self.status.setText('Could not save markers: '+str(error));return
         self.dirty=False;self.status.setText('Markers saved. Choose the next recording.')
         i=self.clips.currentRow()
-        if i>=0:self.clips.item(i).setText(self.clips.item(i).text().replace('○','✓',1))
+        if i>=0:self.clips.item(i).setText(self.clips.item(i).text().replace('○','✓',1).replace('AUTO','✓',1))
     def closeEvent(self,event):
         if not self.maybe_discard():event.ignore();return
         sd.stop();event.accept()
