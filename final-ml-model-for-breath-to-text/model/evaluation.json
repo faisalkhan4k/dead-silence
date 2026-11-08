@@ -1,0 +1,132 @@
+{
+  "warning": "Clip labels are weak; 1-second segments can contain pauses or noise. Fresh held-out recordings were collected near training. Long clips only; original held-out has no silence and fresh held-out has only four inhale clips. Clip-level offline metrics do not measure live accuracy or latency.",
+  "window_ms": 1000,
+  "hop_for_future_live_ms": 50,
+  "feature": "mean and standard deviation of six 50 ms log-band energies across 20 consecutive frames",
+  "labels": [
+    "SILENCE",
+    "INHALE",
+    "EXHALE"
+  ],
+  "train_counts": {
+    "INHALE": 38,
+    "EXHALE": 34,
+    "SILENCE": 25
+  },
+  "skipped_fresh_shorter_than_1000ms": {
+    "train": {
+      "SILENCE": 1
+    },
+    "held-out": {}
+  },
+  "original_held_out": {
+    "model_1000": {
+      "accuracy": 1.0,
+      "balanced_accuracy_present_classes": 1.0,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          10,
+          0
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ],
+      "clip_counts": {
+        "INHALE": 10,
+        "EXHALE": 10
+      },
+      "clips": 20
+    },
+    "baseline_50ms_majority": {
+      "accuracy": 0.85,
+      "balanced_accuracy_present_classes": 0.8500000000000001,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          9,
+          0
+        ],
+        [
+          2,
+          0,
+          8
+        ]
+      ],
+      "clip_counts": {
+        "INHALE": 10,
+        "EXHALE": 10
+      },
+      "clips": 20
+    }
+  },
+  "fresh_held_out": {
+    "model_1000": {
+      "accuracy": 0.9545454545454546,
+      "balanced_accuracy_present_classes": 0.9444444444444445,
+      "confusion_matrix": [
+        [
+          12,
+          0,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          0,
+          5
+        ]
+      ],
+      "clip_counts": {
+        "SILENCE": 12,
+        "INHALE": 4,
+        "EXHALE": 6
+      },
+      "clips": 22
+    },
+    "baseline_50ms_majority": {
+      "accuracy": 0.5454545454545454,
+      "balanced_accuracy_present_classes": 0.3333333333333333,
+      "confusion_matrix": [
+        [
+          12,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          0
+        ]
+      ],
+      "clip_counts": {
+        "SILENCE": 12,
+        "INHALE": 4,
+        "EXHALE": 6
+      },
+      "clips": 22
+    }
+  }
+}
