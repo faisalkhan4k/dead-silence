@@ -8,3 +8,4 @@ lightgbm>=4.6,<5
 xgboost>=3.4,<4
 mlflow>=3.18,<4
 python-dotenv>=1,<2
+elevenlabs>=2.77,<3

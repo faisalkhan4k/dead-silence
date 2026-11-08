@@ -1,5 +1,5 @@
-"""Gemini language assistance and Windows speech output."""
-import json, os, re, subprocess, urllib.request, urllib.error
+"""Gemini language assistance and ElevenLabs speech output."""
+import json, os, re, urllib.request, urllib.error
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -70,9 +70,55 @@ def respond(text):
 
 
 def speak(text):
-    # The message is passed over stdin, never interpolated into the PowerShell command.
-    script="Add-Type -AssemblyName System.Speech; $s=New-Object System.Speech.Synthesis.SpeechSynthesizer; $s.SetOutputToDefaultAudioDevice(); $s.Speak([Console]::In.ReadToEnd()); $s.Dispose()"
-    proc=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',script],input=text,
-                        text=True,encoding='utf-8',capture_output=True,timeout=60,
-                        creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
-    if proc.returncode: raise RuntimeError(proc.stderr.strip() or 'Speech output failed')
+    """Stream 24 kHz signed 16-bit mono PCM to the default audio device.
+
+    The live UI invokes this in a worker and pauses microphone decoding until
+    playback completes. Chunks can end between sample bytes; carry that byte
+    to the next chunk. API keys and generated audio are not logged or saved.
+    """
+    key = os.environ.get('ELEVENLABS_API_KEY', '').strip()
+    voice = os.environ.get('ELEVENLABS_VOICE_ID', '').strip()
+    if not key:
+        raise ValueError('Add ELEVENLABS_API_KEY to the project .env and restart the app.')
+    if not voice:
+        raise ValueError('Add ELEVENLABS_VOICE_ID to the project .env and restart the app.')
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError('There is no text to speak.')
+    try:
+        from elevenlabs.client import ElevenLabs
+        from elevenlabs.core.api_error import ApiError
+        import sounddevice as sd
+    except ImportError:
+        raise RuntimeError('Install the project requirements to use ElevenLabs speech.') from None
+    model = os.environ.get('ELEVENLABS_MODEL_ID', '').strip() or 'eleven_flash_v2_5'
+    try:
+        client = ElevenLabs(api_key=key, timeout=30)
+        chunks = client.text_to_speech.stream(
+            voice_id=voice, text=text, model_id=model, output_format='pcm_24000')
+        played = False
+        pending = b''
+        with sd.RawOutputStream(samplerate=24000, channels=1, dtype='int16') as output:
+            for chunk in chunks:
+                if not chunk:
+                    continue
+                data = pending + bytes(chunk)
+                length = len(data) - len(data) % 2
+                if length:
+                    output.write(data[:length])
+                    played = True
+                pending = data[length:]
+        if pending:
+            raise ValueError('incomplete PCM')
+        if not played:
+            raise ValueError('empty audio')
+    except ApiError as exc:
+        status = exc.status_code if isinstance(exc.status_code, int) else None
+        detail = f' (HTTP {status})' if status else ''
+        raise RuntimeError(f'ElevenLabs request failed{detail}; check the API key, voice ID, access, and quota.') from None
+    except sd.PortAudioError:
+        raise RuntimeError('Could not play speech on the default Windows audio device.') from None
+    except ValueError:
+        raise RuntimeError('ElevenLabs returned incomplete or empty audio.') from None
+    except Exception:
+        # Never surface raw SDK exceptions, which may contain private request data.
+        raise RuntimeError('ElevenLabs speech failed; check your connection and audio device.') from None
