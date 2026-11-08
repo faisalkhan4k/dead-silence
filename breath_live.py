@@ -44,7 +44,8 @@ def find_dataset():
 DATA = find_dataset()
 BASELINE_MODEL = DATA/'window50_model.pkl'
 NOISY_MODEL = HERE/'breath_noise_dataset'/'active_model.pkl'
-MODEL = NOISY_MODEL if NOISY_MODEL.is_file() else BASELINE_MODEL
+# Use the initial 50 ms model; newer noise-trained checkpoints remain experimental.
+MODEL = BASELINE_MODEL
 RATE, N = 48000, 2400
 LABELS = ['SILENCE', 'INHALE', 'EXHALE']
 
