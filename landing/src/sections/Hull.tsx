@@ -1,4 +1,4 @@
-import { btnGhost, btnPrimary, Callout } from "@/components/Room";
+import { btnPrimary, Callout } from "@/components/Room";
 import CorridorPoster from "./CorridorPoster";
 
 export default function Hull() {
@@ -21,9 +21,6 @@ export default function Hull() {
         <div className="flex flex-wrap gap-3">
           <a href="#corridor" className={btnPrimary}>
             Try the breath code
-          </a>
-          <a href="#airlock" className={btnGhost}>
-            Watch the demo
           </a>
         </div>
       </div>
