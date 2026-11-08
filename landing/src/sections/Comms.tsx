@@ -2,7 +2,7 @@ import Room, { Copy, Heading } from "@/components/Room";
 
 const call = [
   "we have your suit on telemetry. You're the only one still moving.",
-  "stay quiet. Four digits.",
+  "stay quiet. Enter the code.",
 ];
 
 export default function Comms() {
