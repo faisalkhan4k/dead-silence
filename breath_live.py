@@ -13,6 +13,27 @@ import re
 import html
 from difflib import SequenceMatcher
 
+
+APP_STYLE = """
+QWidget { background: #101722; color: #e6edf6; font-family: 'Segoe UI'; font-size: 12px; }
+QLabel#brand { color: #f3f6fb; font-size: 23px; font-weight: 700; letter-spacing: 2px; }
+QLabel#tagline, QLabel#keyboardTitle { color: #93a3b9; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+QLabel#keyboardLegend { color: #b4c1d0; font-size: 11px; }
+QLabel#keyboardLetter { background: transparent; color: #f3f6fb; font-size: 16px; font-weight: 700; }
+QLabel#keyboardCode { background: transparent; color: #ff626d; font-family: Consolas; font-size: 12px; font-weight: 700; }
+QPlainTextEdit, QLineEdit, QComboBox, QDoubleSpinBox { background: #1a2533; border: 1px solid #334457; border-radius: 7px; padding: 6px 8px; selection-background-color: #326684; }
+QPlainTextEdit#messageBox { color: #f4f7fb; font-size: 21px; padding: 12px; border: 1px solid #3a4d60; }
+QComboBox QAbstractItemView { background: #1a2533; color: #e6edf6; selection-background-color: #34526c; }
+QPushButton { background: #253448; border: 1px solid #3a5069; border-radius: 7px; padding: 7px 12px; color: #e6edf6; font-weight: 600; }
+QPushButton:hover { background: #30465e; }
+QPushButton:disabled { color: #718094; background: #1a2533; border-color: #273546; }
+QPushButton#primaryButton { background: #315b76; border-color: #477c9a; color: #ffffff; }
+QPushButton#primaryButton:hover { background: #3c6d8a; }
+QFrame#keyboardPanel { background: #17212e; border: 1px solid #2d3b4d; border-radius: 10px; }
+QFrame#keyboardPanel QLabel { background: transparent; }
+QFrame#keyboardKey { background: #233244; border: 1px solid #40526a; border-radius: 7px; }
+"""
+
 HERE = Path(__file__).resolve().parent
 def find_dataset():
     root = HERE/'breath_dataset'
@@ -79,13 +100,24 @@ class Worker(QtCore.QThread):
 class Window(Q.QWidget):
     def __init__(self):
         super().__init__(); self.setWindowTitle('Breath to text • experimental')
-        self.resize(1420,850); self.setMinimumSize(1000,650)
+        self.resize(1420,920); self.setMinimumSize(1000,650)
+        self.setStyleSheet(APP_STYLE)
         self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
         self.stream=None; self.times=[]; self.drops=0; self.workers=[]; self.speaking=False
         self.suggestion_source=None; self.suggestion_word=None
         self.current='SILENCE'; self.candidate='SILENCE'; self.count=0; self.decoder=Decoder()
-        root=Q.QHBoxLayout(self)
-        layout=Q.QVBoxLayout(); root.addLayout(layout, 1)
+        root=Q.QVBoxLayout(self); root.setContentsMargins(22,18,22,18); root.setSpacing(12)
+        scroll=Q.QScrollArea(); scroll.setWidgetResizable(True)
+        scroll.setFrameShape(Q.QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        main_content=Q.QWidget(); main_content.setMinimumHeight(570)
+        layout=Q.QVBoxLayout(main_content); layout.setContentsMargins(0,0,0,0); layout.setSpacing(9)
+        scroll.setWidget(main_content); root.addWidget(scroll,1)
+        header=Q.QHBoxLayout()
+        brand=Q.QLabel('DEAD SILENCE'); brand.setObjectName('brand')
+        tagline=Q.QLabel('BREATH TO TEXT'); tagline.setObjectName('tagline')
+        header.addWidget(brand); header.addWidget(tagline); header.addStretch()
+        layout.addLayout(header)
         self.devices=[(i,d) for i,d in enumerate(sd.query_devices()) if d['max_input_channels']]
         self.device=Q.QComboBox()
         for i,d in self.devices: self.device.addItem(d['name'],i)
@@ -98,7 +130,8 @@ class Window(Q.QWidget):
         self.info=Q.QLabel('1 = inhale • 2 = exhale • 2211 = delete • pause for letter, word, then send'); self.info.setWordWrap(True); layout.addWidget(self.info)
         self.live=Q.QLabel('Ready'); self.live.setStyleSheet('font-size: 24px; font-weight: bold'); layout.addWidget(self.live)
         self.target=Q.QLineEdit(); self.target.setPlaceholderText('Optional experiment target phrase (not sent to MLflow)'); layout.addWidget(self.target)
-        self.message=Q.QPlainTextEdit(); self.message.setPlaceholderText('Decoded text appears here. You can edit it.'); layout.addWidget(self.message,1)
+        self.message=Q.QPlainTextEdit(); self.message.setPlaceholderText('Decoded text appears here. You can edit it.')
+        self.message.setObjectName('messageBox'); self.message.setMinimumHeight(90); layout.addWidget(self.message,1)
         comfort=Q.QHBoxLayout(); layout.addLayout(comfort); comfort.addWidget(Q.QLabel('Comfort after this run:'))
         self.comfort=Q.QComboBox(); self.comfort.addItems(['Not rated','1 - very uncomfortable','2 - uncomfortable','3 - neutral','4 - comfortable','5 - very comfortable']); comfort.addWidget(self.comfort)
         self.ghost=Q.QLabel(''); self.ghost.setWordWrap(True); self.ghost.setTextFormat(QtCore.Qt.TextFormat.RichText); layout.addWidget(self.ghost)
@@ -114,7 +147,7 @@ class Window(Q.QWidget):
         self.word_gap=self.spin(opts,'Word gap',.5,8,2)
         self.send_gap=self.spin(opts,'Send gap',1,15,4)
         buttons=Q.QHBoxLayout(); layout.addLayout(buttons)
-        self.start=Q.QPushButton('Start'); self.start.clicked.connect(self.toggle); buttons.addWidget(self.start)
+        self.start=Q.QPushButton('Start'); self.start.setObjectName('primaryButton'); self.start.clicked.connect(self.toggle); buttons.addWidget(self.start)
         send=Q.QPushButton('Send'); send.clicked.connect(self.send); buttons.addWidget(send)
         delete=Q.QPushButton('Delete letter'); delete.clicked.connect(self.delete_letter); buttons.addWidget(delete)
         space=Q.QPushButton('Space'); space.clicked.connect(lambda:self.insert(' ')); buttons.addWidget(space)
@@ -123,26 +156,31 @@ class Window(Q.QWidget):
         self.suggest_timer=QtCore.QTimer(self); self.suggest_timer.setSingleShot(True); self.suggest_timer.timeout.connect(self.request_suggestions)
         self.message.textChanged.connect(self.text_changed)
     def build_reference_panel(self):
-        panel=Q.QGroupBox('Breath-code key')
-        panel.setMinimumWidth(280); panel.setMaximumWidth(390)
-        layout=Q.QVBoxLayout(panel)
-        legend=Q.QLabel('Inhale = 1    •    Exhale = 2')
-        legend.setWordWrap(True); layout.addWidget(legend)
-        scroll=Q.QScrollArea(); scroll.setWidgetResizable(True)
-        scroll.setFrameShape(Q.QFrame.Shape.NoFrame)
-        content=Q.QWidget(); grid=Q.QGridLayout(content)
-        grid.setHorizontalSpacing(16); grid.setVerticalSpacing(6)
-        items=list(CODES.items()); rows=(len(items)+1)//2
-        self.reference_codes={}
-        for index,(code,letter) in enumerate(items):
-            row=index % rows; col=(index // rows)*2
-            label=Q.QLabel(code); label.setStyleSheet('font-family: monospace; font-weight: bold; font-size: 15px;')
-            value=Q.QLabel(letter); value.setStyleSheet('font-size: 15px;')
-            grid.addWidget(label,row,col); grid.addWidget(value,row,col+1)
-            self.reference_codes[code]=letter
-        scroll.setWidget(content); layout.addWidget(scroll,1)
-        control=Q.QLabel(f'Delete: {DELETE_CODE}\nPause to finish a letter, then a word, then send.')
-        control.setWordWrap(True); layout.addWidget(control)
+        panel=Q.QFrame(); panel.setObjectName('keyboardPanel')
+        layout=Q.QVBoxLayout(panel); layout.setContentsMargins(14,11,14,12); layout.setSpacing(7)
+        title=Q.QHBoxLayout()
+        heading=Q.QLabel('BREATH-CODE KEYBOARD'); heading.setObjectName('keyboardTitle')
+        legend=Q.QLabel('INHALE  1     ·     EXHALE  2     ·     DELETE  ' + DELETE_CODE)
+        legend.setObjectName('keyboardLegend')
+        title.addWidget(heading); title.addStretch(); title.addWidget(legend)
+        layout.addLayout(title)
+        by_letter={letter:code for code,letter in CODES.items()}
+        self.reference_codes=dict(CODES)
+        self.keyboard_keys={}
+        for row_index,letters in enumerate(('QWERTYUIOP','ASDFGHJKL','ZXCVBNM')):
+            row=Q.QHBoxLayout(); row.setSpacing(6)
+            if row_index: row.addSpacing(22 if row_index==1 else 65)
+            for letter in letters:
+                frame=Q.QFrame(); frame.setObjectName('keyboardKey'); frame.setMinimumHeight(46)
+                frame.setSizePolicy(Q.QSizePolicy.Policy.Expanding,Q.QSizePolicy.Policy.Fixed)
+                contents=Q.QVBoxLayout(frame); contents.setContentsMargins(4,3,4,3); contents.setSpacing(0)
+                name=Q.QLabel(letter); name.setObjectName('keyboardLetter'); name.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                code=Q.QLabel(by_letter[letter]); code.setObjectName('keyboardCode'); code.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                contents.addWidget(name); contents.addWidget(code)
+                self.keyboard_keys[letter]=code
+                row.addWidget(frame,1)
+            if row_index: row.addSpacing(22 if row_index==1 else 65)
+            layout.addLayout(row)
         return panel
     def text_changed(self):
         self.suggestion_source=None; self.suggestion_word=None; self.ghost.clear()
@@ -261,6 +299,7 @@ class Window(Q.QWidget):
                 elif event=='delete': self.delete_letter(); self.info.setText('Deleted last letter.')
                 elif event=='send': self.info.setText('Send pause reached.'); self.send()
                 elif event=='invalid': self.info.setText(f'Unassigned code {value}; try again.')
+                elif event=='overflow': self.info.setText('Maximum 5 numbers; pause and try again.')
             countdown = ''
             if (self.current=='SILENCE' and self.decoder.send_armed
                     and self.decoder.silence >= self.decoder.word_gap):

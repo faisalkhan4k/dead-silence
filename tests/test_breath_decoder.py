@@ -77,6 +77,19 @@ class SilenceControlTests(unittest.TestCase):
         self.assertIn(('invalid', '2212'), events)
         self.assertNotIn(('send', None), events)
 
+    def test_more_than_five_numbers_rejects_all_until_letter_pause(self):
+        decoder = Decoder()
+        events = feed_code(decoder, '111111112')
+        self.assertEqual(len(decoder.code), 5)
+        self.assertEqual(sum(kind == 'overflow' for kind, _ in events), 1)
+        self.assertFalse(any(kind in ('letter', 'delete', 'space', 'send') for kind, _ in events))
+        events += advance_silence(decoder, .75)
+        self.assertIn(('invalid', '11111'), events)
+        self.assertFalse(decoder.overflow)
+        self.assertEqual(decoder.code, '')
+        events = feed_code(decoder, '2') + advance_silence(decoder, .75)
+        self.assertIn(('letter', 'T'), events)
+
     def test_invalid_timing_and_initial_silence(self):
         for kwargs in ({'letter_gap': 2, 'word_gap': 2}, {'word_gap': 4, 'send_gap': 4}, {'letter_gap': 0}):
             with self.assertRaises(ValueError):

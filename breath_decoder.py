@@ -7,6 +7,7 @@ CODES = dict(zip(
     'ETAOINSHRDLUCMFWGYPBVKJXQZ',
 ))
 DELETE_CODE = '2211'
+MAX_CODE_LENGTH = 5
 
 
 class Decoder:
@@ -22,6 +23,7 @@ class Decoder:
         self.current = 'SILENCE'
         self.silence = 0.0
         self.code = ''
+        self.overflow = False
         self.word_pending = False
         self.send_armed = False
 
@@ -36,8 +38,15 @@ class Decoder:
         events = []
         if state != self.current:
             if self.current in ('INHALE', 'EXHALE'):
-                self.code += '1' if self.current == 'INHALE' else '2'
-                events.append(('digit', self.code))
+                if len(self.code) < MAX_CODE_LENGTH:
+                    self.code += '1' if self.current == 'INHALE' else '2'
+                    events.append(('digit', self.code))
+                elif not self.overflow:
+                    # Do not turn a long sequence into a truncated valid code.
+                    self.overflow = True
+                    self.word_pending = False
+                    self.send_armed = False
+                    events.append(('overflow', None))
             self.current = state
             if state != 'SILENCE':
                 self.silence = 0.0
@@ -49,7 +58,12 @@ class Decoder:
         epsilon = 1e-9
         if self.code and self.silence + epsilon >= self.letter_gap:
             code, self.code = self.code, ''
-            if code == DELETE_CODE:
+            overflow, self.overflow = self.overflow, False
+            if overflow:
+                events.append(('invalid', code))
+                self.word_pending = False
+                self.send_armed = False
+            elif code == DELETE_CODE:
                 events.append(('delete', None))
                 # Deletion must not automatically put back a trailing space.
                 self.word_pending = False
