@@ -1,5 +1,6 @@
 import Room, { Copy, Heading, Plate } from "@/components/Room";
 import CorridorBreath from "@/components/CorridorBreath";
+import HowItWorks from "@/components/HowItWorks";
 
 const corner = "pointer-events-none absolute h-5 w-5 border-ember";
 
@@ -41,6 +42,7 @@ export default function Corridor() {
           </div>
         </Plate>
       </div>
+      <HowItWorks />
     </Room>
   );
 }
