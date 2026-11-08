@@ -1,17 +1,31 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-soil: #140e0c;
-  --color-wood: #2a1b15;
-  --color-plank: #3b2a22;
-  --color-dust: #c8643b;
-  --color-bone: #e8dcc4;
-  --color-lamp: #e7b65c;
-  --color-breath: #5fa8a0;
-  --color-alarm: #d93a2b;
-  --font-serif: var(--font-fraunces), Georgia, serif;
-  --font-mono: var(--font-plex), ui-monospace, monospace;
-  --font-hand: var(--font-caveat), cursive;
+  --color-void: #0a0a0c;
+  --color-steel: #16171b;
+  --color-plate: #24262c;
+  --color-rivet: #3a3d45;
+  --color-ash: #e6e3dc;
+  --color-ember: #ff5a1f;
+  --color-threat: #e3182d;
+  --color-signal: #2fc4d6;
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-barlow), Arial, sans-serif;
+  --font-mono: var(--font-share-tech), ui-monospace, monospace;
+  --animate-shake: shake 0.3s linear infinite;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
 }
 
 html {
@@ -19,80 +33,50 @@ html {
 }
 
 body {
-  background: var(--color-soil);
-  color: var(--color-bone);
-  font: 400 1.0625rem/1.65 var(--font-serif);
+  background: var(--color-void);
+  color: var(--color-ash);
+  font: 400 1.0625rem/1.6 var(--font-sans);
   overflow-x: hidden;
 }
 
 a {
-  color: var(--color-lamp);
+  color: var(--color-ember);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-lamp);
+  outline: 3px solid var(--color-ember);
   outline-offset: 3px;
+  box-shadow: 0 0 18px rgb(255 90 31 / 0.55);
 }
 
-/* hero sound rings and lit window */
-.ring {
-  transform-origin: center;
-  transform-box: fill-box;
-  animation: spread 5s ease-out infinite;
-  opacity: 0;
+/* Chamfered plate: top-right and bottom-left corners cut. */
+.chamfer {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut, 10px)) 0,
+    100% var(--cut, 10px),
+    100% 100%,
+    var(--cut, 10px) 100%,
+    0 calc(100% - var(--cut, 10px))
+  );
 }
-.ring:nth-of-type(2) {
-  animation-delay: 1.6s;
-}
-.ring:nth-of-type(3) {
-  animation-delay: 3.2s;
-}
-@keyframes spread {
-  0% {
-    transform: scale(0.2);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(3.2);
-    opacity: 0;
-  }
-}
-.win {
-  animation: flick 7s steps(1) infinite;
-}
-@keyframes flick {
-  0%,
-  90%,
-  100% {
-    opacity: 1;
-  }
-  92% {
-    opacity: 0.35;
-  }
-  94% {
-    opacity: 1;
-  }
-  96% {
-    opacity: 0.5;
-  }
-}
-@media (max-width: 700px) {
-  #house {
-    transform: translate(500px, 110px);
-  }
+
+/* Skewed ember bar under headings. */
+.slash {
+  display: block;
+  width: 5.5rem;
+  height: 6px;
+  background: var(--color-ember);
+  transform: skewX(-12deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .ring,
-  .win {
-    animation: none;
-    opacity: 0.35;
-  }
   * {
     transition: none !important;
+    animation: none !important;
   }
 }
 
@@ -101,15 +85,9 @@ main {
   position: relative;
   z-index: 1;
 }
-html[data-scene="on"] #exterior svg,
 html[data-scene="on"] section {
   background: transparent;
 }
-html[data-scene="on"] #exterior svg {
+html[data-scene="on"] #hull svg {
   display: none;
-}
-html[data-scene="on"] .panel {
-  background: rgb(20 14 12 / 0.78);
-  padding-block: 1.25rem;
-  padding-right: 1.25rem;
 }

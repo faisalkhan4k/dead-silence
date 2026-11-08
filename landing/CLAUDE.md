@@ -9,21 +9,24 @@ The backend teammate works on `main`. Never touch it.
 - Small commits, one concern each. Message format: `landing: <what>`.
 
 ## Project
-Landing page for **Dead Silence**, a survival-horror game (UB Hacking 2026, "Into the Hackosmos"). Premise, palette and breath code are in `DESIGN.md` and the shared Ideas doc. The real game is a native 3D app built by a teammate; the page only advertises it.
+Landing page for **Dead Silence**, a survival-horror game (UB Hacking 2026, "Into the Hackosmos"). Premise, palette and breath code are in `DESIGN.md`. The shared Ideas doc still describes the older Mars-house idea. The real game is a native 3D app built by a teammate; the page only advertises it.
 
 ## Design is a template, not a contract
 The concept, palette, type and layout in this file and `DESIGN.md` are a starting point. The owner will change them after looking at references and early builds. Do not defend the current look. When told to change direction: (1) update `DESIGN.md` in a small edit, (2) apply the change in code, (3) keep the quality floor below. Ask once before big changes (new stack, dropping the 3D scene); small visual changes just do.
 
-## Concept: the page is the house (first direction, may change)
-One fixed WebGL scene (a cutaway of the Mars house). Scrolling moves a camera through it. Each room is a section:
-| Scroll | Room | Content |
+## Concept: the page is the ship (v2, Nov 7 change, may change again)
+Game premise: you are the last person alive on a spaceship; an unknown entity killed the crew and hunts by sound; Earth Command is on a call with you; every door needs a code entered by breath (sniff = 1, puff = 2). Entity close: breath only. Entity far: voice allowed. Noise near it means instant death. Open every door and exit.
+Look: Doom Eternal energy (heavy condensed type, hot orange on black, chamfered HUD panels), original assets only. Full spec in `DESIGN.md`.
+One fixed WebGL scene (a ship interior of six compartments). Scrolling moves a camera through it. Each compartment is a section:
+| Scroll | Section id | Content |
 | --- | --- | --- |
-| 0 | Exterior at dusk | Title, tagline, sound rings from the lit window |
-| 1 | Kitchen | Premise (where, who hunts, how you talk) |
-| 2 | Hall | **Breath-code demo** (press 1/2, interactive) |
-| 3 | Greenhouse | The hunter: belief map |
-| 4 | Workshop | Puzzles |
-| 5 | Launch pad | Team, sponsors (only if used), demo video, source link |
+| 0 | hull | Title, tagline, one-line premise |
+| 1 | comms | Earth Command call, crew is dead |
+| 2 | corridor | **Breath-code demo** (press 1/2) |
+| 3 | reactor | The entity, near vs far rules, belief-map bars |
+| 4 | cargo | The doors, rules |
+| 5 | airlock | Team, source link, demo video slot |
+The earlier Mars-house concept is retired. `reference/index.html` is the old prototype: use it only for the breath-demo logic and copy that still fits.
 
 ## Stack
 Next.js (App Router, `output: 'export'`, no server features), Tailwind, React Three Fiber + drei, GSAP + ScrollTrigger (scroll-linked camera), Framer Motion for small UI. No Spline, no hosted 3D blobs. Aceternity components only as hidden utilities, never as visible stock layouts.

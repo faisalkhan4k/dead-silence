@@ -3,13 +3,15 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { P } from "./palette";
 import { cellX, livePings, ping } from "./ping";
 
 const POOL = 12;
 const LIFE = 3.2;
 const REACH = 5;
 
-// Expanding floor rings. Hero pings slowly from the lit kitchen window.
+// Expanding floor rings: signal blue, threat red when the demo is too loud.
+// Hero pings slowly from the comms bay.
 export default function Rings({ still }: { still: boolean }) {
   const meshes = useRef<(THREE.Mesh | null)[]>([]);
   const mats = useMemo(
@@ -18,7 +20,7 @@ export default function Rings({ still }: { still: boolean }) {
         { length: POOL },
         () =>
           new THREE.MeshBasicMaterial({
-            color: "#5FA8A0",
+            color: P.signal,
             transparent: true,
             depthWrite: false,
             side: THREE.DoubleSide,
@@ -48,7 +50,9 @@ export default function Rings({ still }: { still: boolean }) {
       const k = (now - p.t) / LIFE;
       m.position.set(p.x, 0.03, p.z);
       m.scale.setScalar(0.3 + k * REACH);
-      (m.material as THREE.MeshBasicMaterial).opacity = 0.7 * (1 - k) * (1 - k);
+      const mat = m.material as THREE.MeshBasicMaterial;
+      mat.color.set(p.hot ? P.threat : P.signal);
+      mat.opacity = 0.7 * (1 - k) * (1 - k);
     }
   });
 

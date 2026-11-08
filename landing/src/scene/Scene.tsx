@@ -15,7 +15,7 @@ function hasWebGL() {
 }
 
 // Mounts the fixed canvas only on wide screens with WebGL. Otherwise the
-// static SVG house in the Exterior section is the poster.
+// static SVG poster in the hull section is the poster.
 export default function Scene() {
   const [on, setOn] = useState(false);
   const [still, setStill] = useState(false);

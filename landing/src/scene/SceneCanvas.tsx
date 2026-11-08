@@ -2,7 +2,8 @@
 
 import { Canvas } from "@react-three/fiber";
 import CameraRig from "./CameraRig";
-import House from "./House";
+import { P } from "./palette";
+import Ship from "./Ship";
 import Rings from "./Rings";
 
 export default function SceneCanvas({ still }: { still: boolean }) {
@@ -15,9 +16,9 @@ export default function SceneCanvas({ still }: { still: boolean }) {
       style={{ pointerEvents: "none" }}
       aria-hidden="true"
     >
-      <color attach="background" args={["#140E0C"]} />
-      <fog attach="fog" args={["#140E0C", 9, 34]} />
-      <House still={still} />
+      <color attach="background" args={[P.void]} />
+      <fog attach="fog" args={[P.void, 8, 30]} />
+      <Ship still={still} />
       <Rings still={still} />
       <CameraRig still={still} />
     </Canvas>

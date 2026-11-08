@@ -1,22 +1,22 @@
 import Scene from "@/scene/Scene";
-import Exterior from "@/sections/Exterior";
-import Kitchen from "@/sections/Kitchen";
-import Hall from "@/sections/Hall";
-import Greenhouse from "@/sections/Greenhouse";
-import Workshop from "@/sections/Workshop";
-import Launchpad from "@/sections/Launchpad";
+import Hull from "@/sections/Hull";
+import Comms from "@/sections/Comms";
+import Corridor from "@/sections/Corridor";
+import Reactor from "@/sections/Reactor";
+import Cargo from "@/sections/Cargo";
+import Airlock from "@/sections/Airlock";
 
 export default function Home() {
   return (
     <>
       <Scene />
       <main>
-        <Exterior />
-        <Kitchen />
-        <Hall />
-        <Greenhouse />
-        <Workshop />
-        <Launchpad />
+        <Hull />
+        <Comms />
+        <Corridor />
+        <Reactor />
+        <Cargo />
+        <Airlock />
       </main>
     </>
   );

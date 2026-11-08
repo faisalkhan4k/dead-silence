@@ -1,59 +1,78 @@
-# Dead Silence design system (landing page)
+# Dead Silence design system (landing page) v2: derelict ship, Doom Eternal energy
 
-> **Status: starting template, not final.** Everything below is a working direction. The palette, fonts, 3D "page is the house" concept, layout and motion rules can all change as the owner explores references and sees it in the browser. When a direction changes, update this file first, then the code. Keep the anti-slop checklist and the quality floor (accessibility, mobile, reduced motion); everything else is negotiable.
+> **Status: starting template, not final.** The team changed the concept on Nov 7. Palette, fonts, 3D scene and layout can still change after a browser check. When direction changes, update this file first, then the code. Keep the quality floor (accessibility, mobile, reduced motion). Everything else is negotiable.
+> **Originality rule:** inspired by the aggressive, heavy, high-contrast HUD look of Doom Eternal. No Doom logos, fonts, art, sounds or copied layouts.
+
+## Concept
+You are the last person alive on a spaceship. Something unknown killed the rest of the crew and it hunts by sound. Earth Command is on a call with you. Every door needs a code, and you enter it with your breath. Entity close: breath code only, silent. Entity far: you may use your voice. Make noise when it is near and it kills you instantly. Open every door and get out.
 
 ## Mood
-A lived-in house that is wrong. Warm lamp light in a cold dark. Quiet. Sound made visible. Dread comes from restraint, not gore.
+Hostile, loud, mechanical. Hard edges, heavy type, hot orange against black, red when it is near. The only quiet thing on the page is the demo, and that is the point.
 
-## Palette
+## Palette (replaces the Mars palette)
 | Token | Hex | Use |
 | --- | --- | --- |
-| soil | #140E0C | Page background, deep shadow |
-| wood | #2A1B15 | Panels, floors |
-| plank | #3B2A22 | Borders, empty slots |
-| dust | #C8643B | Mars terrain and sky glow only, never UI accents |
-| bone | #E8DCC4 | Text |
-| lamp | #E7B65C | The single UI accent: buttons, focus, lit windows |
-| breath | #5FA8A0 | Player sound only: rings, demo meter |
-| alarm | #D93A2B | Danger only; large text/icons (4.6:1 on soil) |
+| void | #0A0A0C | Page background |
+| steel | #16171B | Panels, hull geometry |
+| plate | #24262C | Raised plates, empty slots |
+| rivet | #3A3D45 | Borders, rules |
+| ash | #E6E3DC | Text |
+| ember | #FF5A1F | Primary accent: buttons, focus, door strips, slashes |
+| threat | #E3182D | The entity and danger only; large text and icons only (about 4:1 on void) |
+| signal | #2FC4D6 | Player breath and the Earth Command call: rings, demo meter, comms text |
 
-Contrast on soil: bone 14:1, lamp 10:1, breath 7:1.
+Contrast on void: ash 15:1, ember 6:1, signal 9:1.
+One highlight at a time in view: ember by default, threat only when something is dangerous.
 
 ## Type
-- Fraunces (700, opsz 144) for titles. Large, tight tracking, set low on the page.
-- IBM Plex Mono (400/500) for HUD, code, subtitles, buttons.
-- Caveat (500) for handwritten notes on walls. Max one per room.
-- Body 17-18 px serif, line length under 62 characters, line-height 1.65.
+- Barlow Condensed 800 and 700, uppercase, tight, for titles and section heads. Set large.
+- Barlow 400/500 for body, 17 px, lines under 64 characters.
+- Share Tech Mono for HUD labels, codes, buttons and the comms transcript.
+
+## Shapes and surfaces
+- Chamfered panels: `clip-path` with 10 px cut corners (top-right and bottom-left), 2 px rivet border (use a 2 px inset outline since clip-path hides borders).
+- Slash divider: a skewed ember bar (-12 deg), 6 px tall, used between sections and under headings.
+- HUD corner brackets on the demo panel.
+- Glow only on interactive or dangerous things: ember glow on focus and active buttons, threat glow when the noise meter is over the line.
+- Comms strip: a signal-coloured transcript line styled as a call ("EARTH COMMAND: stay quiet. Four digits.").
 
 ## Symbols
-Ring = 1 (inhale). Disc = 2 (exhale). Used in the demo, the letter table and as bullets in the puzzles list.
+Ring = 1 (inhale, sniff). Disc = 2 (exhale, puff). Used in the demo, the letter table and the door keypad bullets.
 
 ## 3D scene rules
-- Cutaway house built from boxes and planes in code. No imported assets for v1.
-- Flat-shaded, low-key: one warm point light in the occupied room, faint cold fill, fog to soil.
-- Sound rings: expanding flat rings on the floor (shader or scaled torus), breath colour, fade out. Triggered by the demo's key presses and slowly in the hero.
-- The villain is never shown. It is a light that dims, a shadow that crosses a door, a footstep sound the user can enable.
-- Camera moves along a spline between rooms, scrubbed by scroll. Hold on each room while its text is on screen.
-- Dust particles: a few hundred points, very slow.
-- Budget: under 150 draw calls, DPR capped at 1.5 (1 on mobile).
+- Ship interior built from boxes and planes in code, no imported assets: six compartments in a line with door frames between them (hull, comms bay, corridor, reactor, cargo, airlock).
+- Flat-shaded steel, fog to void, ember strips on every door frame, slow ember emergency pulse, faint cold fill.
+- Breath rings: expanding signal-coloured floor rings, triggered by demo key presses. If demo noise is over 70 percent, rings turn threat red and the scene lights flicker once.
+- The entity is never shown: a red light under a door, a shadow crossing a gap.
+- Camera on a spline through the compartments, scrubbed by scroll, with a hold per section.
+- Budget: DPR cap 1.5 (1 on mobile), under 150 draw calls.
 
 ## Motion
-- One orchestrated moment: hero load (window lights, rings begin).
-- Scroll camera is the main motion. Everything else answers user input only.
-- No fade-and-slide-up on every section, no hover transitions on every card.
-- Reduced motion: scene frozen at each room's still frame.
+- One orchestrated moment on load: door strips power on, one ring fires.
+- Scroll camera is the main motion. Noise meter shakes when over the line (off under reduced motion).
+- No fade-and-slide-up on every section.
+- Reduced motion: scene frozen at each compartment's still frame.
 
 ## Layout
-- Left-aligned text blocks sit over the dark half of each room; the lit half stays clear.
-- Text panels have no card chrome: a thin plank rule on the left and nothing else.
-- No bento grid, no gradient washes, no identical rounded cards, no all-caps eyebrow labels.
+- Left-aligned text over the scene, big condensed uppercase headings, ember slash under each.
+- Panels are chamfered plates, not rounded cards. No bento grid, no gradient washes, no identical rounded cards.
+- Section map (ids): hull, comms, corridor, reactor, cargo, airlock.
 
 ## Copy
-Short, plain, sentence case. Verbs for buttons: "Try the breath code", "Watch the demo", "Read the source". Errors in the demo say what happened: "Too loud. It heard that."
+Short, plain, command voice. Buttons: "Try the breath code", "Watch the demo", "Read the source". Demo errors say what happened: "Too loud. It heard that."
 
-## Anti-slop checklist (run before each commit that changes visuals)
-1. Would this section look the same with another game's name on it? If yes, rework.
-2. Any stock Aceternity layout visible? Remove or restyle.
-3. More than one accent colour in view? Cut to lamp.
-4. Any element animating without a user action or the camera? Cut it.
-5. Is the lit window the brightest thing in the first screen? Keep it that way.
+## Section content
+| id | Compartment | Content |
+| --- | --- | --- |
+| hull | Exterior / hull | Title, tagline "Don't breathe too loud.", one line of premise |
+| comms | Comms bay | The call: you are alone, Earth Command is on the line, crew is dead |
+| corridor | Corridor | **Breath-code demo** (keys 1 and 2), door keypad framing |
+| reactor | Reactor | The entity: hears everything. Near means breath only. Far means voice. Noise near it means instant death. Belief-map bars |
+| cargo | Cargo | The doors: open every one, then exit. Rules list |
+| airlock | Airlock | Team, source link, demo video slot |
+
+## Checklist before each visual commit
+1. Does it still look like this game and not any generic sci-fi page? If not, rework.
+2. One highlight colour in view at a time?
+3. Any element animating without a user action or the camera? Cut it.
+4. Text readable over the scene at 360 px?

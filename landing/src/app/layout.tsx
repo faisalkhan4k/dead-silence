@@ -1,29 +1,29 @@
 import type { Metadata } from "next";
-import { Caveat, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Barlow, Barlow_Condensed, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const condensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
   subsets: ["latin"],
-  axes: ["opsz"],
+  weight: ["700", "800"],
 });
 
-const plex = IBM_Plex_Mono({
-  variable: "--font-plex",
+const barlow = Barlow({
+  variable: "--font-barlow",
   subsets: ["latin"],
   weight: ["400", "500"],
 });
 
-const caveat = Caveat({
-  variable: "--font-caveat",
+const mono = Share_Tech_Mono({
+  variable: "--font-share-tech",
   subsets: ["latin"],
-  weight: "500",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
   title: "Dead Silence",
   description:
-    "A survival game on Mars where the only way to talk is by breathing, and breathing is loud.",
+    "The last one alive on a ship. Something killed the crew and it hunts by sound. Don't breathe too loud.",
 };
 
 export default function RootLayout({
@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${plex.variable} ${caveat.variable} antialiased`}
+      className={`${condensed.variable} ${barlow.variable} ${mono.variable} antialiased`}
     >
       <body>{children}</body>
     </html>

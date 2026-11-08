@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { invalidate, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-// One waypoint per room: exterior, kitchen, hall, greenhouse, workshop, pad.
+// One waypoint per room: hull, comms, corridor, reactor, cargo, airlock.
 const POS: [number, number, number][] = [
   [-4, 2.4, 10.5],
   [6, 2.2, 7.4],
