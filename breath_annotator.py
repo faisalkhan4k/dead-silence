@@ -37,6 +37,17 @@ class Annotator(Q.QWidget):
         self.region=pg.LinearRegionItem(values=[0,1],brush=(100,170,255,50));self.plot.addItem(self.region)
         self.region.sigRegionChanged.connect(self.selection_changed)
         self.selection=Q.QLabel('Selection: —');main.addWidget(self.selection)
+        output_row=Q.QHBoxLayout();main.addLayout(output_row)
+        output_row.addWidget(Q.QLabel('Playback device:'))
+        self.output=Q.QComboBox();hosts=sd.query_hostapis();default_output=sd.default.device[1]
+        for index,device in enumerate(sd.query_devices()):
+            if device['max_output_channels']:
+                self.output.addItem(f"{device['name']} ({hosts[device['hostapi']]['name']})",index)
+        default_index=self.output.findData(default_output)
+        if default_index>=0:self.output.setCurrentIndex(default_index)
+        output_row.addWidget(self.output,1)
+        self.boost=Q.QCheckBox('Boost quiet playback');self.boost.setChecked(True);output_row.addWidget(self.boost)
+        test=Q.QPushButton('Test output');test.clicked.connect(self.test_output);output_row.addWidget(test)
         row=Q.QHBoxLayout();main.addLayout(row)
         for title,fn in [('Play entire clip',self.play_all),('Play selection',self.play_selection),('Stop playback',sd.stop)]:
             button=Q.QPushButton(title);button.clicked.connect(fn);row.addWidget(button)
@@ -98,8 +109,24 @@ class Annotator(Q.QWidget):
     def play_selection(self):
         if self.samples is not None:
             a,b=self.selected_indices();self.play(self.samples[a:b])
+    def test_output(self):
+        rate=48000;t=np.arange(int(rate*.3))/rate
+        signal=(.04*np.sin(2*np.pi*440*t)*np.sin(np.pi*np.arange(len(t))/len(t))**2).astype(np.float32)
+        self.play_audio(signal,rate,'Test tone')
     def play(self,samples):
-        try:sd.stop();sd.play(samples,self.rate,blocking=False)
+        if not len(samples):self.status.setText('The selection is empty.');return
+        signal=np.asarray(samples,dtype=np.float32)
+        gain=1.0
+        if self.boost.isChecked() and self.samples is not None:
+            peak=float(np.max(np.abs(self.samples)))
+            if peak>0:gain=min(1000.0,.5/peak)
+        signal=np.clip(signal*gain,-1,1)
+        self.play_audio(signal,self.rate,f'Playing audio (gain {gain:.0f}×)')
+    def play_audio(self,samples,rate,description):
+        if self.output.currentData() is None:self.status.setText('No playback device is available.');return
+        try:
+            sd.stop();sd.play(samples,rate,device=self.output.currentData(),blocking=False)
+            self.status.setText(description+' through '+self.output.currentText())
         except Exception as error:self.status.setText('Playback failed: '+str(error))
     def add_marker(self,label):
         if self.samples is None:return
