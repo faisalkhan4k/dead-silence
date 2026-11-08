@@ -25,3 +25,5 @@ Run `Start Breath Sequences.cmd` to collect sequence-level examples (no event ti
 ## Breath and background recordings
 
 Run `Start Breath Noise Dataset.cmd` to collect intentional inhale, intentional exhale, and no-intentional-breath clips under selectable background conditions. Train and held-out clips should be from separate sittings. The intended category labels each whole clip, not individual 50 ms windows; annotate actual breath boundaries before frame-level training. Audio is saved locally in the ignored `breath_noise_dataset/` directory. This collector does not retrain the model.
+
+Run `Start Breath Annotator.cmd` to review the noise-dataset WAVs. Drag the shaded selection over a clearly audible interval, play the selection, and mark it as INHALE, EXHALE, or NO_BREATH; click Save markers before moving to the next clip. Green, red and gold show the respective marked intervals. Recordings and markers remain local under the ignored dataset directory. Unmarked audio is unlabeled, not automatically silence. Markers are saved as sample indices in annotations.json; this tool does not train a model.
