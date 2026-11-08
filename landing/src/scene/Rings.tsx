@@ -48,7 +48,7 @@ export default function Rings({ still }: { still: boolean }) {
       m.visible = !!p;
       if (!p) continue;
       const k = (now - p.t) / LIFE;
-      m.position.set(p.x, 0.03, p.z);
+      m.position.set(p.x, 0.06, p.z);
       m.scale.setScalar(0.3 + k * REACH);
       const mat = m.material as THREE.MeshBasicMaterial;
       mat.color.set(p.hot ? P.threat : P.signal);

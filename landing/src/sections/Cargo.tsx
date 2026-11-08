@@ -11,11 +11,11 @@ const rules = [
 
 export default function Cargo() {
   return (
-    <Room id="cargo">
+    <Room id="cargo" tag="05 / Cargo" place="low">
       <Heading>Open every door. Then get out.</Heading>
-      <ol className="max-w-[64ch]">
+      <ol className="scrim max-w-[62ch] px-4">
         {rules.map((r, i) => (
-          <li key={r} className="flex gap-4 border-b-2 border-rivet py-3">
+          <li key={r} className="flex gap-4 border-b border-rivet py-3 last:border-b-0">
             <span aria-hidden="true" className="w-6 shrink-0 font-mono text-ember">
               {i % 2 ? "●" : "○"}
             </span>

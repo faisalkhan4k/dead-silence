@@ -28,25 +28,27 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--color-void);
-  color: var(--color-ash);
-  font: 400 1.0625rem/1.6 var(--font-sans);
-  overflow-x: hidden;
-}
+  body {
+    background: var(--color-void);
+    color: var(--color-ash);
+    font: 400 1.0625rem/1.6 var(--font-sans);
+    overflow-x: hidden;
+  }
 
-a {
-  color: var(--color-ember);
-}
+  a {
+    color: var(--color-ember);
+  }
 
-:focus-visible {
-  outline: 3px solid var(--color-ember);
-  outline-offset: 3px;
-  box-shadow: 0 0 18px rgb(255 90 31 / 0.55);
+  :focus-visible {
+    outline: 3px solid var(--color-ember);
+    outline-offset: 3px;
+    box-shadow: 0 0 18px rgb(255 90 31 / 0.55);
+  }
 }
 
 /* Chamfered plate: top-right and bottom-left corners cut. */
@@ -59,6 +61,16 @@ a {
     var(--cut, 10px) 100%,
     0 calc(100% - var(--cut, 10px))
   );
+}
+
+/* Legibility over the scene: shadow plus a narrow flat scrim. */
+.hud-text {
+  text-shadow:
+    0 0 2px rgb(10 10 12 / 0.9),
+    0 2px 14px rgb(10 10 12 / 0.85);
+}
+.scrim {
+  background: rgb(10 10 12 / 0.58);
 }
 
 /* Skewed ember bar under headings. */
