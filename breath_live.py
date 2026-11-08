@@ -1,4 +1,4 @@
-"""Experimental 50 ms breath window model and live five-breath display."""
+"""Experimental 50 ms breath classifier with silence-based text controls."""
 import json, os, pickle, queue, time
 from pathlib import Path
 import numpy as np
@@ -93,7 +93,7 @@ class Window(Q.QWidget):
         self.key_input.setPlaceholderText('Groq API key (optional if GROQ_API_KEY is in .env)')
         key_row.addWidget(self.key_input)
         key_button=Q.QPushButton('Use key for this session'); key_button.clicked.connect(self.set_key); key_row.addWidget(key_button)
-        self.info=Q.QLabel('1 = inhale • 2 = exhale • short gaps between breaths • letter pause 0.8 s • word pause 2 s'); self.info.setWordWrap(True); layout.addWidget(self.info)
+        self.info=Q.QLabel('1 = inhale • 2 = exhale • 2211 = delete • pause for letter, word, then send'); self.info.setWordWrap(True); layout.addWidget(self.info)
         self.live=Q.QLabel('Ready'); self.live.setStyleSheet('font-size: 24px; font-weight: bold'); layout.addWidget(self.live)
         self.target=Q.QLineEdit(); self.target.setPlaceholderText('Optional experiment target phrase (not sent to MLflow)'); layout.addWidget(self.target)
         self.message=Q.QPlainTextEdit(); self.message.setPlaceholderText('Decoded text appears here. You can edit it.'); layout.addWidget(self.message,1)
@@ -110,8 +110,7 @@ class Window(Q.QWidget):
         opts=Q.QHBoxLayout(); layout.addLayout(opts)
         self.letter_gap=self.spin(opts,'Letter gap',.3,3,.8)
         self.word_gap=self.spin(opts,'Word gap',.5,8,2)
-        self.long_breath=self.spin(opts,'Long breath',.5,5,1.2)
-        self.recovery=self.spin(opts,'Recovery',.5,10,2)
+        self.send_gap=self.spin(opts,'Send gap',1,15,4)
         buttons=Q.QHBoxLayout(); layout.addLayout(buttons)
         self.start=Q.QPushButton('Start'); self.start.clicked.connect(self.toggle); buttons.addWidget(self.start)
         send=Q.QPushButton('Send'); send.clicked.connect(self.send); buttons.addWidget(send)
@@ -183,7 +182,12 @@ class Window(Q.QWidget):
             self.speaking=True; self.launch_worker('speak',spoken)
         elif kind=='speak':
             self.speaking=False; self.current=self.candidate='SILENCE'; self.count=0
-            self.decoder.reset(); self.decoder.recovering=True; self.decoder.recovery_left=self.recovery.value(); self.decoder.recovery_wait_silence=True
+            # Do not decode samples buffered while the spoken reply was playing.
+            for _ in range(self.q.maxsize):
+                try: self.q.get_nowait()
+                except queue.Empty: break
+            self.decoder.reset()
+            self.info.setText('Ready for the next input.')
             if error: self.language_status.setText('Speech failed: '+error)
     def send(self):
         text=self.message.toPlainText().strip()
@@ -196,13 +200,15 @@ class Window(Q.QWidget):
         except queue.Full: self.drops+=1
     def toggle(self):
         if self.stream: self.stop(); return
-        if self.letter_gap.value()>=self.word_gap.value(): self.info.setText('Word gap must exceed letter gap.'); return
-        self.decoder=Decoder(self.letter_gap.value(),self.word_gap.value(),self.long_breath.value(),self.recovery.value())
+        if not self.letter_gap.value() < self.word_gap.value() < self.send_gap.value():
+            self.info.setText('Set the gaps in increasing order: letter < word < send.'); return
+        self.decoder=Decoder(self.letter_gap.value(),self.word_gap.value(),self.send_gap.value())
         self.current=self.candidate='SILENCE'; self.count=0
         self.run_target=self.target.text(); self.run_started=time.perf_counter()
         try:
             self.stream=sd.InputStream(device=self.device.currentData(),samplerate=RATE,channels=1,dtype='float32',blocksize=N,callback=self.callback)
             self.stream.start(); self.device.setEnabled(False); self.start.setText('Stop and log')
+            for control in (self.letter_gap,self.word_gap,self.send_gap): control.setEnabled(False)
         except Exception as e:
             if self.stream: self.stream.close(); self.stream=None
             self.info.setText(str(e))
@@ -220,22 +226,25 @@ class Window(Q.QWidget):
             for event,value in self.decoder.advance(self.current):
                 if event=='letter': self.insert(value)
                 elif event=='space': self.accept_word_pause()
-                elif event=='delete': self.delete_letter(); self.info.setText('Deleted last letter. Recover and return to silence.')
-                elif event=='send': self.info.setText('Long exhale detected. Input paused for recovery.'); self.send()
-                elif event=='ready': self.info.setText('Ready after recovery.')
-                elif event=='invalid': self.info.setText('Code too long; pause after 1–4 breaths.')
-            state='RECOVERY' if self.decoder.recovering else self.current
-            self.live.setText(f'{state}  |  code: {self.decoder.code or "—"}  |  compute {elapsed:.1f} ms')
+                elif event=='delete': self.delete_letter(); self.info.setText('Deleted last letter.')
+                elif event=='send': self.info.setText('Send pause reached.'); self.send()
+                elif event=='invalid': self.info.setText(f'Unassigned code {value}; try again.')
+            countdown = ''
+            if (self.current=='SILENCE' and self.decoder.send_armed
+                    and self.decoder.silence >= self.decoder.word_gap):
+                countdown = f'  |  send in {max(0., self.decoder.send_gap-self.decoder.silence):.1f} s'
+            self.live.setText(f'{self.current}  |  code: {self.decoder.code or "—"}  |  compute {elapsed:.1f} ms{countdown}')
     def stop(self):
         self.stream.stop(); self.stream.close(); self.stream=None
         self.device.setEnabled(True); self.start.setText('Start')
+        for control in (self.letter_gap,self.word_gap,self.send_gap): control.setEnabled(True)
         if self.times:
             arr=np.asarray(self.times); self.info.setText(f'Frames: {len(arr)}; compute median {np.median(arr[:,0]):.1f} ms, p95 {np.percentile(arr[:,0],95):.1f} ms; callback-to-result p95 {np.percentile(arr[:,1],95):.1f} ms; faults/drops {self.drops}.')
             try:
                 import mlflow
                 mlflow.set_tracking_uri('sqlite:///'+(HERE/'breath_mlflow.db').as_posix()); mlflow.set_experiment('breath-live')
                 with mlflow.start_run(run_name='live-inference'):
-                    mlflow.log_params({'window_ms':50,'smoothing_windows':3,'letter_gap_s':self.decoder.letter_gap,'word_gap_s':self.decoder.word_gap,'long_breath_s':self.decoder.long_breath,'recovery_s':self.decoder.recovery,'model':'random_forest'})
+                    mlflow.log_params({'window_ms':50,'smoothing_windows':3,'letter_gap_s':self.decoder.letter_gap,'word_gap_s':self.decoder.word_gap,'send_gap_s':self.decoder.send_gap,'control_mode':'silence_send_code_delete','model':'random_forest'})
                     metrics={'compute_p50_ms':float(np.median(arr[:,0])), 'compute_p95_ms':float(np.percentile(arr[:,0],95)), 'callback_to_result_p95_ms':float(np.percentile(arr[:,1],95)), 'frames':len(arr),'faults_or_drops':self.drops,'duration_s':time.perf_counter()-self.run_started}
                     target=self.run_target.strip().casefold(); actual=self.message.toPlainText().strip().casefold()
                     if target:

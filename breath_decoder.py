@@ -1,48 +1,74 @@
-"""Frame-based breath-to-letter protocol; thresholds are provisional."""
-CODES = dict(zip(['1','2','11','12','21','22','111','112','121','122','211','212','221','222','1111','1112','1121','1122','1211','1212','1221','1222','2111','2112','2121','2122'],
-                 'ET AOINSHRDLUCMFWGYPBVKJXQZ'.replace(' ','')))
+"""Decode classified breath events and timed silence into text commands."""
+
+CODES = dict(zip(
+    ['1', '2', '11', '12', '21', '22', '111', '112', '121', '122',
+     '211', '212', '221', '222', '1111', '1112', '1121', '1122',
+     '1211', '1212', '1221', '1222', '2111', '2112', '2121', '2122'],
+    'ETAOINSHRDLUCMFWGYPBVKJXQZ',
+))
+DELETE_CODE = '2211'
+
 
 class Decoder:
-    def __init__(self, letter_gap=.8, word_gap=2.0, long_breath=1.2, recovery=2.0):
-        if not 0 < letter_gap < word_gap: raise ValueError('Word gap must be longer than letter gap')
-        self.letter_gap, self.word_gap, self.long_breath, self.recovery = letter_gap, word_gap, long_breath, recovery
+    def __init__(self, letter_gap=.8, word_gap=2.0, send_gap=4.0):
+        if not 0 < letter_gap < word_gap < send_gap:
+            raise ValueError('Timing must satisfy 0 < letter gap < word gap < send gap')
+        self.letter_gap = letter_gap
+        self.word_gap = word_gap
+        self.send_gap = send_gap
         self.reset()
+
     def reset(self):
-        self.current='SILENCE'; self.duration=0.; self.silence=0.; self.code=''; self.word_done=True
-        self.recovering=False; self.recovery_left=0.; self.recovery_wait_silence=False
+        self.current = 'SILENCE'
+        self.silence = 0.0
+        self.code = ''
+        self.word_pending = False
+        self.send_armed = False
+
     def advance(self, state, dt=.05):
-        events=[]
-        if self.recovering:
-            # Ignore all breaths; start the comfort interval on the first silence.
-            if self.recovery_wait_silence:
-                if state != 'SILENCE': return events
-                self.recovery_wait_silence=False
-            self.recovery_left=max(0.,self.recovery_left-dt)
-            if self.recovery_left<=0 and state=='SILENCE':
-                self.recovering=False; self.current='SILENCE'; self.silence=0
-                events.append(('ready',None))
-            return events
+        """Consume one classified window, returning events in chronological order.
+
+        Time is measured from classified silence, not the user's actual breath.
+        A send is emitted at most once until a further code is committed.
+        """
+        if state not in ('SILENCE', 'INHALE', 'EXHALE') or dt <= 0:
+            raise ValueError('Expected a positive-duration classified breath window')
+        events = []
         if state != self.current:
-            if self.current in ('INHALE','EXHALE'):
-                digit='1' if self.current=='INHALE' else '2'
-                if len(self.code)<4:
-                    self.code+=digit; events.append(('digit',self.code))
-                else: events.append(('invalid',self.code+digit))
-                self.word_done=False
-            self.current=state; self.duration=0.
-            if state!='SILENCE': self.silence=0.
-        if state=='SILENCE':
-            self.silence+=dt
-            if self.code and self.silence>=self.letter_gap:
-                events.append(('letter',CODES[self.code])); self.code=''
-            if not self.word_done and self.silence>=self.word_gap:
-                events.append(('space',None)); self.word_done=True
-        else:
-            self.duration+=dt
-            if self.duration + 1e-9 >= self.long_breath:
-                if self.current=='EXHALE' and self.code:
-                    events.append(('letter',CODES[self.code]))
-                events.append(('delete' if self.current=='INHALE' else 'send',None))
-                self.code=''; self.recovering=True; self.recovery_left=self.recovery
-                self.recovery_wait_silence=True; self.duration=0.
+            if self.current in ('INHALE', 'EXHALE'):
+                self.code += '1' if self.current == 'INHALE' else '2'
+                events.append(('digit', self.code))
+            self.current = state
+            if state != 'SILENCE':
+                self.silence = 0.0
+
+        if state != 'SILENCE':
+            return events
+
+        self.silence += dt
+        epsilon = 1e-9
+        if self.code and self.silence + epsilon >= self.letter_gap:
+            code, self.code = self.code, ''
+            if code == DELETE_CODE:
+                events.append(('delete', None))
+                # Deletion must not automatically put back a trailing space.
+                self.word_pending = False
+                self.send_armed = True
+            elif code in CODES:
+                events.append(('letter', CODES[code]))
+                self.word_pending = True
+                self.send_armed = True
+            else:
+                events.append(('invalid', code))
+                self.word_pending = False
+                self.send_armed = False
+
+        if self.word_pending and self.silence + epsilon >= self.word_gap:
+            events.append(('space', None))
+            self.word_pending = False
+
+        if self.send_armed and self.silence + epsilon >= self.send_gap:
+            events.append(('send', None))
+            self.send_armed = False
+
         return events

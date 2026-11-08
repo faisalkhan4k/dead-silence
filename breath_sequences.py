@@ -14,8 +14,8 @@ PROMPTS=[('1 2 1','Short inhale, exhale, inhale; pause naturally between each.')
          ('2 1 2','Short exhale, inhale, exhale; pause naturally between each.'),
          ('1 1 2','Two short inhales, then a short exhale.'),
          ('2 2 1','Two short exhales, then a short inhale.'),
-         ('DELETE 2','Long inhale (delete), recover naturally, then short exhale when ready.'),
-         ('SEND 1','Long exhale (send), recover naturally, then short inhale when ready.')]
+         ('2211 DELETE','Exhale, exhale, inhale, inhale; pause to finish the delete code.'),
+         ('1 SEND','Inhale once; pause for at least 4 seconds to send.')]
 
 class Collector(Q.QWidget):
     def __init__(self):
