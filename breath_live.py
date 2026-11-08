@@ -7,7 +7,7 @@ from scipy.io import wavfile
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 from PySide6 import QtCore, QtWidgets as Q
-from breath_decoder import Decoder
+from breath_decoder import CODES, DELETE_CODE, Decoder
 import breath_language
 import re
 import html
@@ -79,18 +79,20 @@ class Worker(QtCore.QThread):
 class Window(Q.QWidget):
     def __init__(self):
         super().__init__(); self.setWindowTitle('Breath to text • experimental')
-        self.resize(950,650); self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
+        self.resize(1420,850); self.setMinimumSize(1000,650)
+        self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
         self.stream=None; self.times=[]; self.drops=0; self.workers=[]; self.speaking=False
         self.suggestion_source=None; self.suggestion_word=None
         self.current='SILENCE'; self.candidate='SILENCE'; self.count=0; self.decoder=Decoder()
-        layout=Q.QVBoxLayout(self)
+        root=Q.QHBoxLayout(self)
+        layout=Q.QVBoxLayout(); root.addLayout(layout, 1)
         self.devices=[(i,d) for i,d in enumerate(sd.query_devices()) if d['max_input_channels']]
         self.device=Q.QComboBox()
         for i,d in self.devices: self.device.addItem(d['name'],i)
         layout.addWidget(self.device)
         key_row=Q.QHBoxLayout(); layout.addLayout(key_row)
         self.key_input=Q.QLineEdit(); self.key_input.setEchoMode(Q.QLineEdit.EchoMode.Password)
-        self.key_input.setPlaceholderText('Groq API key (optional if GROQ_API_KEY is in .env)')
+        self.key_input.setPlaceholderText('Gemini API key (optional if GEMINI_API_KEY is in .env)')
         key_row.addWidget(self.key_input)
         key_button=Q.QPushButton('Use key for this session'); key_button.clicked.connect(self.set_key); key_row.addWidget(key_button)
         self.info=Q.QLabel('1 = inhale • 2 = exhale • 2211 = delete • pause for letter, word, then send'); self.info.setWordWrap(True); layout.addWidget(self.info)
@@ -105,7 +107,7 @@ class Window(Q.QWidget):
         for _ in range(3):
             button=Q.QPushButton('—'); button.setEnabled(False); button.clicked.connect(lambda checked=False,b=button:self.use_suggestion(b.text()))
             self.suggestions.addWidget(button); self.suggestion_buttons.append(button)
-        self.language_status=Q.QLabel('Suggestions use Groq. Add GROQ_API_KEY to .env, then restart.'); self.language_status.setWordWrap(True); layout.addWidget(self.language_status)
+        self.language_status=Q.QLabel('Gemini is configured for suggestions and replies.' if os.environ.get('GEMINI_API_KEY', '').strip() else 'Add GEMINI_API_KEY to .env, then restart.'); self.language_status.setWordWrap(True); layout.addWidget(self.language_status)
         self.reply=Q.QLabel('Crewmate reply: —'); self.reply.setWordWrap(True); layout.addWidget(self.reply)
         opts=Q.QHBoxLayout(); layout.addLayout(opts)
         self.letter_gap=self.spin(opts,'Letter gap',.3,3,.8)
@@ -116,9 +118,32 @@ class Window(Q.QWidget):
         send=Q.QPushButton('Send'); send.clicked.connect(self.send); buttons.addWidget(send)
         delete=Q.QPushButton('Delete letter'); delete.clicked.connect(self.delete_letter); buttons.addWidget(delete)
         space=Q.QPushButton('Space'); space.clicked.connect(lambda:self.insert(' ')); buttons.addWidget(space)
+        root.addWidget(self.build_reference_panel())
         self.timer=QtCore.QTimer(self); self.timer.timeout.connect(self.poll); self.timer.start(25)
         self.suggest_timer=QtCore.QTimer(self); self.suggest_timer.setSingleShot(True); self.suggest_timer.timeout.connect(self.request_suggestions)
         self.message.textChanged.connect(self.text_changed)
+    def build_reference_panel(self):
+        panel=Q.QGroupBox('Breath-code key')
+        panel.setMinimumWidth(280); panel.setMaximumWidth(390)
+        layout=Q.QVBoxLayout(panel)
+        legend=Q.QLabel('Inhale = 1    •    Exhale = 2')
+        legend.setWordWrap(True); layout.addWidget(legend)
+        scroll=Q.QScrollArea(); scroll.setWidgetResizable(True)
+        scroll.setFrameShape(Q.QFrame.Shape.NoFrame)
+        content=Q.QWidget(); grid=Q.QGridLayout(content)
+        grid.setHorizontalSpacing(16); grid.setVerticalSpacing(6)
+        items=list(CODES.items()); rows=(len(items)+1)//2
+        self.reference_codes={}
+        for index,(code,letter) in enumerate(items):
+            row=index % rows; col=(index // rows)*2
+            label=Q.QLabel(code); label.setStyleSheet('font-family: monospace; font-weight: bold; font-size: 15px;')
+            value=Q.QLabel(letter); value.setStyleSheet('font-size: 15px;')
+            grid.addWidget(label,row,col); grid.addWidget(value,row,col+1)
+            self.reference_codes[code]=letter
+        scroll.setWidget(content); layout.addWidget(scroll,1)
+        control=Q.QLabel(f'Delete: {DELETE_CODE}\nPause to finish a letter, then a word, then send.')
+        control.setWordWrap(True); layout.addWidget(control)
+        return panel
     def text_changed(self):
         self.suggestion_source=None; self.suggestion_word=None; self.ghost.clear()
         for button in self.suggestion_buttons: button.setEnabled(False); button.setText('—')
@@ -138,8 +163,8 @@ class Window(Q.QWidget):
     def set_key(self):
         key=self.key_input.text().strip()
         if key:
-            os.environ['GROQ_API_KEY']=key; self.key_input.clear()
-            self.language_status.setText('Key set for this app session. Text is sent to Groq for suggestions and replies.'); self.suggest_timer.start(300)
+            os.environ['GEMINI_API_KEY']=key; self.key_input.clear()
+            self.language_status.setText('Key set for this app session. Text is sent to Gemini for suggestions and replies.'); self.suggest_timer.start(300)
         else: self.language_status.setText('Enter an API key first.')
     def spin(self, layout, label, low, high, value):
         layout.addWidget(Q.QLabel(label+' (s)')); spin=Q.QDoubleSpinBox(); spin.setRange(low,high); spin.setSingleStep(.1); spin.setValue(value); layout.addWidget(spin); return spin
@@ -171,14 +196,14 @@ class Window(Q.QWidget):
             if words:
                 self.suggestion_source=worker.text; self.suggestion_word=words[0]
                 self.show_ghost(worker.text,words[0])
-            self.language_status.setText('Groq suggestions; select a word to complete it.')
+            self.language_status.setText('Gemini suggestions; select a word to complete it.')
         elif kind=='respond':
             if error:
-                self.language_status.setText('Groq unavailable. Speaking the original message; no cleanup or generated reply. ' + error + '')
+                self.language_status.setText('Gemini unavailable. Speaking the original message; no cleanup or generated reply. ' + error + '')
                 self.reply.setText('Crewmate reply unavailable'); spoken=worker.text
             else:
                 cleaned,reply=result; self.message.setPlainText(cleaned); self.reply.setText('Crewmate reply: '+reply); spoken=reply
-                self.language_status.setText('Message cleaned and reply generated by Groq.')
+                self.language_status.setText('Message cleaned and reply generated by Gemini.')
             self.speaking=True; self.launch_worker('speak',spoken)
         elif kind=='speak':
             self.speaking=False; self.current=self.candidate='SILENCE'; self.count=0
