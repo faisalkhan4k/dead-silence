@@ -59,7 +59,7 @@ function commitWord(prev: State): State {
     status:
       "Word locked: " +
       s.cur +
-      (words.length === MAX_WORDS ? ". Message full, sending." : "."),
+      (words.length === MAX_WORDS ? ". Message full. Clear to start over." : "."),
   };
 }
 
