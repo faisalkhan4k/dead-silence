@@ -27,7 +27,7 @@ class Annotator(Q.QWidget):
         self.entries=[]; self.path=None; self.samples=None; self.rate=None; self.segments=[]; self.dirty=False; self.updating=False
         root=Q.QHBoxLayout(self); side=Q.QVBoxLayout();root.addLayout(side,1)
         side.addWidget(Q.QLabel('Recordings'))
-        self.filter=Q.QComboBox(); self.filter.addItems(['All recordings','Unannotated','Annotated']); side.addWidget(self.filter)
+        self.filter=Q.QComboBox(); self.filter.addItems(['Selected training clips','Needs review','Reviewed']); side.addWidget(self.filter)
         self.clips=Q.QListWidget();side.addWidget(self.clips,1)
         self.reload=Q.QPushButton('Reload recordings');self.reload.clicked.connect(self.load_list);side.addWidget(self.reload)
         main=Q.QVBoxLayout();root.addLayout(main,3)
@@ -69,19 +69,24 @@ class Annotator(Q.QWidget):
         if not self.maybe_discard():return
         self.dirty=False;sd.stop();self.updating=True;self.clips.clear();self.entries=[];self.path=None;self.samples=None
         self.curve.setData([],[]);self.segments=[];self.refresh_markers()
-        for meta_path in sorted(ROOT.glob('*/metadata.json')):
+        try:
+            subset=json.loads((ROOT/'annotation_subset.json').read_text(encoding='utf-8'))['clips']
+        except (OSError,ValueError,KeyError):
+            self.updating=False;self.status.setText('Training selection not found.');return
+        for selected in subset:
+            meta_path=ROOT/selected['folder']/'metadata.json'
             try:
                 meta=json.loads(meta_path.read_text(encoding='utf-8-sig'));audio=meta_path.parent/'mic.wav';annot=meta_path.parent/'annotations.json'
                 if not audio.exists():continue
-                if self.filter.currentIndex()==1 and annot.exists():continue
-                if self.filter.currentIndex()==2 and not annot.exists():continue
                 flag='○'
                 if annot.exists():
                     saved=json.loads(annot.read_text(encoding='utf-8'))
                     flag='AUTO' if saved.get('review_status')=='PROVISIONAL_AUTOMATIC' else '✓'
-                self.entries.append((meta_path.parent,meta));self.clips.addItem(f"{flag}  {meta.get('split','?')} | {meta.get('category','?')} | {meta.get('background','?')} | {meta_path.parent.name[-8:]}")
+                if self.filter.currentIndex()==1 and flag=='✓':continue
+                if self.filter.currentIndex()==2 and flag!='✓':continue
+                self.entries.append((meta_path.parent,meta));self.clips.addItem(f"{selected['number']:02d}  {flag}  {meta.get('category','?')} | {meta.get('background','?')}")
             except (ValueError,OSError):continue
-        self.updating=False;self.status.setText(f'{len(self.entries)} recordings. Select a clip to begin.')
+        self.updating=False;self.status.setText(f'{len(self.entries)} selected training recordings. AUTO markers need review.')
     def open_clip(self,index):
         if self.updating or index<0:return
         if not self.maybe_discard():
