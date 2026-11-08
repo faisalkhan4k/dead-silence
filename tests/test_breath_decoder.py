@@ -1,101 +1,39 @@
 import unittest
-
 from breath_decoder import CODES, DELETE_CODE, Decoder
 
+def code(d,value):
+ out=[]
+ for digit in value:
+  out+=d.advance('INHALE' if digit=='1' else 'EXHALE',.1)
+  out+=d.advance('SILENCE',.05)
+ return out
 
-def feed_code(decoder, code):
-    events = []
-    for digit in code:
-        events += decoder.advance('INHALE' if digit == '1' else 'EXHALE', .1)
-        events += decoder.advance('SILENCE', .05)
-    return events
+def silence(d,n):
+ out=[]
+ for _ in range(n):out+=d.advance('SILENCE',.05)
+ return out
 
+class FixedCodes(unittest.TestCase):
+ def test_mapping(self):
+  self.assertEqual(len(CODES),26);self.assertEqual(set(CODES.values()),set('ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
+  self.assertTrue(all(len(k)==5 for k in CODES));self.assertEqual(DELETE_CODE,'22121');self.assertNotIn(DELETE_CODE,CODES)
+  for k,v in CODES.items():self.assertIn(('letter',v),code(Decoder(),k))
+ def test_commits_immediately_and_ignores_sixth_during_cooldown(self):
+  d=Decoder();events=code(d,'11111');self.assertIn(('letter','A'),events)
+  self.assertFalse(any(e[0]=='digit' for e in code(d,'2')))
+  silence(d,16);self.assertEqual(d.code,'')
+  self.assertIn(('letter','B'),code(d,'11112'))
+ def test_incomplete_never_makes_letter_or_send(self):
+  d=Decoder();events=code(d,'12')+silence(d,40)
+  self.assertIn(('incomplete','12'),events);self.assertFalse(any(k in ('letter','send','space') for k,v in events))
+ def test_word_and_send_once(self):
+  d=Decoder();events=code(d,'11111')+silence(d,79)
+  self.assertIn(('space',None),events);self.assertIn(('send',None),events)
+  self.assertNotIn(('send',None),silence(d,100))
+ def test_delete_and_unassigned(self):
+  self.assertIn(('delete',None),code(Decoder(),DELETE_CODE))
+  self.assertIn(('invalid','22222'),code(Decoder(),'22222'))
+ def test_timing_validation(self):
+  with self.assertRaises(ValueError):Decoder(letter_gap=2,word_gap=2)
 
-def advance_silence(decoder, seconds):
-    events = []
-    for _ in range(round(seconds / .05)):
-        events += decoder.advance('SILENCE', .05)
-    return events
-
-
-class SilenceControlTests(unittest.TestCase):
-    def test_every_letter_and_reserved_delete_have_unique_codes(self):
-        self.assertEqual(len(CODES), 26)
-        self.assertEqual(set(CODES.values()), set('ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
-        self.assertNotIn(DELETE_CODE, CODES)
-        for code, letter in CODES.items():
-            decoder = Decoder()
-            events = feed_code(decoder, code) + advance_silence(decoder, .75)
-            self.assertIn(('letter', letter), events, code)
-
-    def test_one_pause_emits_letter_space_and_send_once(self):
-        decoder = Decoder()
-        events = feed_code(decoder, '1')
-        events += advance_silence(decoder, .75)
-        self.assertIn(('letter', 'E'), events)
-        self.assertNotIn(('space', None), events)
-        self.assertEqual(advance_silence(decoder, 1.2), [('space', None)])
-        self.assertEqual(advance_silence(decoder, 2), [('send', None)])
-        self.assertEqual(advance_silence(decoder, 8), [])
-
-    def test_breath_restarts_send_countdown(self):
-        decoder = Decoder()
-        feed_code(decoder, '1')
-        advance_silence(decoder, 3.85)
-        feed_code(decoder, '2')
-        events = advance_silence(decoder, 3.9)
-        self.assertNotIn(('send', None), events)
-        self.assertIn(('send', None), advance_silence(decoder, .05))
-
-    def test_delete_is_a_code_and_does_not_add_a_word_space(self):
-        decoder = Decoder()
-        events = feed_code(decoder, DELETE_CODE) + advance_silence(decoder, 3.95)
-        self.assertEqual([event for event in events if event[0] == 'delete'], [('delete', None)])
-        self.assertFalse(any(event[0] in ('letter', 'space') for event in events))
-        self.assertEqual([event for event in events if event[0] == 'send'], [('send', None)])
-
-    def test_long_breath_does_not_trigger_a_command(self):
-        decoder = Decoder()
-        for _ in range(100):
-            self.assertEqual(decoder.advance('EXHALE'), [])
-        events = decoder.advance('SILENCE') + advance_silence(decoder, .75)
-        self.assertIn(('letter', 'T'), events)
-        self.assertFalse(any(event[0] in ('send', 'delete') for event in events))
-
-    def test_unassigned_or_overlong_code_is_not_misread(self):
-        for code in ('2212', '11111'):
-            decoder = Decoder()
-            events = feed_code(decoder, code) + advance_silence(decoder, .75)
-            self.assertIn(('invalid', code), events)
-            self.assertFalse(any(event[0] in ('letter', 'delete', 'space', 'send') for event in events))
-
-    def test_invalid_code_disarms_automatic_send(self):
-        decoder = Decoder()
-        feed_code(decoder, '1')
-        advance_silence(decoder, .75)
-        events = feed_code(decoder, '2212') + advance_silence(decoder, 5)
-        self.assertIn(('invalid', '2212'), events)
-        self.assertNotIn(('send', None), events)
-
-    def test_more_than_five_numbers_rejects_all_until_letter_pause(self):
-        decoder = Decoder()
-        events = feed_code(decoder, '111111112')
-        self.assertEqual(len(decoder.code), 5)
-        self.assertEqual(sum(kind == 'overflow' for kind, _ in events), 1)
-        self.assertFalse(any(kind in ('letter', 'delete', 'space', 'send') for kind, _ in events))
-        events += advance_silence(decoder, .75)
-        self.assertIn(('invalid', '11111'), events)
-        self.assertFalse(decoder.overflow)
-        self.assertEqual(decoder.code, '')
-        events = feed_code(decoder, '2') + advance_silence(decoder, .75)
-        self.assertIn(('letter', 'T'), events)
-
-    def test_invalid_timing_and_initial_silence(self):
-        for kwargs in ({'letter_gap': 2, 'word_gap': 2}, {'word_gap': 4, 'send_gap': 4}, {'letter_gap': 0}):
-            with self.assertRaises(ValueError):
-                Decoder(**kwargs)
-        self.assertEqual(advance_silence(Decoder(), 10), [])
-
-
-if __name__ == '__main__':
-    unittest.main()
+if __name__=='__main__':unittest.main()

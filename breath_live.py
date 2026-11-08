@@ -129,7 +129,7 @@ class Window(Q.QWidget):
         self.key_input.setPlaceholderText('Gemini API key (optional if GEMINI_API_KEY is in .env)')
         key_row.addWidget(self.key_input)
         key_button=Q.QPushButton('Use key for this session'); key_button.clicked.connect(self.set_key); key_row.addWidget(key_button)
-        self.info=Q.QLabel('1 = inhale • 2 = exhale • 2211 = delete • pause for letter, word, then send'); self.info.setWordWrap(True); layout.addWidget(self.info)
+        self.info=Q.QLabel(f'1 = inhale • 2 = exhale • five breaths per letter • {DELETE_CODE} = delete'); self.info.setWordWrap(True); layout.addWidget(self.info)
         self.live=Q.QLabel('Ready'); self.live.setStyleSheet('font-size: 24px; font-weight: bold'); layout.addWidget(self.live)
         self.target=Q.QLineEdit(); self.target.setPlaceholderText('Optional experiment target phrase (not sent to MLflow)'); layout.addWidget(self.target)
         self.message=Q.QPlainTextEdit(); self.message.setPlaceholderText('Decoded text appears here. You can edit it.')
@@ -145,7 +145,7 @@ class Window(Q.QWidget):
         self.language_status=Q.QLabel('Gemini is configured for suggestions and replies.' if os.environ.get('GEMINI_API_KEY', '').strip() else 'Add GEMINI_API_KEY to .env, then restart.'); self.language_status.setWordWrap(True); layout.addWidget(self.language_status)
         self.reply=Q.QLabel('Crewmate reply: —'); self.reply.setWordWrap(True); layout.addWidget(self.reply)
         opts=Q.QHBoxLayout(); layout.addLayout(opts)
-        self.letter_gap=self.spin(opts,'Letter gap',.3,3,.8)
+        self.letter_gap=self.spin(opts,'Between letters',.3,3,.8)
         self.word_gap=self.spin(opts,'Word gap',.5,8,2)
         self.send_gap=self.spin(opts,'Send gap',1,15,4)
         buttons=Q.QHBoxLayout(); layout.addLayout(buttons)
@@ -301,6 +301,7 @@ class Window(Q.QWidget):
                 elif event=='delete': self.delete_letter(); self.info.setText('Deleted last letter.')
                 elif event=='send': self.info.setText('Send pause reached.'); self.send()
                 elif event=='invalid': self.info.setText(f'Unassigned code {value}; try again.')
+                elif event=='incomplete': self.info.setText(f'Incomplete code {value}; enter all five breaths.')
                 elif event=='overflow': self.info.setText('Maximum 5 numbers; pause and try again.')
             countdown = ''
             if (self.current=='SILENCE' and self.decoder.send_armed
