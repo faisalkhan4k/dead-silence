@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dead Silence</title>
+<meta name="description" content="A survival game on Mars where the only way to talk is by breathing, and breathing is loud.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,400;9..144,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--soil:#140E0C;--wood:#2A1B15;--plank:#3B2A22;--dust:#C8643B;--bone:#E8DCC4;--lamp:#E7B65C;--breath:#5FA8A0;--alarm:#D93A2B;
+--serif:'Fraunces',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,monospace;--hand:'Caveat',cursive}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--soil);color:var(--bone);font:400 1.0625rem/1.65 var(--serif)}
+a{color:var(--lamp)}
+:focus-visible{outline:3px solid var(--lamp);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-weight:700;line-height:1.1;margin:0}
+h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:.6em}
+p{margin:0 0 1em;max-width:62ch}
+section{padding:72px 0}
+.mono{font-family:var(--mono)}
+/* hero */
+.hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;overflow:hidden;padding:0;background:linear-gradient(#140E0C 0%,#2A1B15 62%,#4a2619 100%)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .wrap{width:100%;position:relative;padding-bottom:12vh;padding-top:120px}
+.hero h1{font-size:clamp(4rem,12vw,8rem);letter-spacing:-.03em;font-variation-settings:'opsz' 144}
+.hero .tag{font:italic 400 clamp(1.2rem,3vw,1.7rem)/1.3 var(--serif);color:var(--lamp);margin:.3em 0 1.4em}
+.btn{display:inline-block;font:500 1rem var(--mono);padding:.8em 1.3em;border:2px solid var(--lamp);color:var(--soil);background:var(--lamp);text-decoration:none;border-radius:4px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--lamp)}
+.btn:hover{background:var(--bone);border-color:var(--bone);color:var(--soil)}
+.ring{transform-origin:center;transform-box:fill-box;animation:spread 5s ease-out infinite;opacity:0}
+.ring:nth-of-type(2){animation-delay:1.6s}.ring:nth-of-type(3){animation-delay:3.2s}
+@keyframes spread{0%{transform:scale(.2);opacity:.7}100%{transform:scale(3.2);opacity:0}}
+.win{animation:flick 7s steps(1) infinite}
+@keyframes flick{0%,90%,100%{opacity:1}92%{opacity:.35}94%{opacity:1}96%{opacity:.5}}
+/* premise */
+.three{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.three div{border-left:3px solid var(--plank);padding-left:16px}
+.three h3{font-size:1.25rem;margin-bottom:.3em;color:var(--lamp)}
+.note{font:500 1.5rem var(--hand);color:var(--bone);opacity:.85;transform:rotate(-1.5deg);display:inline-block;margin-top:8px}
+/* demo */
+.demo{background:var(--wood);border-top:1px solid var(--plank);border-bottom:1px solid var(--plank)}
+.panel{display:grid;gap:28px;grid-template-columns:minmax(0,260px) minmax(0,1fr);align-items:center;margin:24px 0}
+@media(max-width:700px){.panel{grid-template-columns:1fr;justify-items:center}}
+.lung{width:220px;height:220px}
+.lung circle.base{fill:none;stroke:var(--plank);stroke-width:8}
+#lungfill{fill:none;stroke:var(--breath);stroke-width:8;transition:r .25s ease}
+.hud{font-family:var(--mono);width:100%}
+.slots{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.slot{min-width:5.5ch;min-height:2.6em;padding:.5em .8em;background:var(--soil);border:2px solid var(--plank);border-radius:4px;font-size:1.1rem;letter-spacing:.08em;color:var(--bone)}
+.slot.on{border-color:var(--lamp)}
+.code{height:2em;font-size:1.4rem;color:var(--breath);letter-spacing:.3em}
+.code .d{color:var(--bone)}
+.meter{height:14px;background:var(--soil);border:2px solid var(--plank);border-radius:7px;position:relative;margin:10px 0 4px}
+#noise{height:100%;width:0;background:var(--breath);border-radius:5px;transition:width .15s,background .15s}
+.meter i{position:absolute;left:70%;top:-6px;bottom:-6px;width:2px;background:var(--alarm)}
+.small{font:400 .85rem var(--mono);color:var(--bone);opacity:.8}
+.keys{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+.keys button{font:500 1rem var(--mono);padding:.8em 1.2em;background:var(--soil);color:var(--bone);border:2px solid var(--breath);border-radius:4px;cursor:pointer}
+.keys button:active,.keys button.hit{background:var(--breath);color:var(--soil)}
+.reset{font:400 .9rem var(--mono);background:none;color:var(--lamp);border:0;text-decoration:underline;cursor:pointer}
+table{border-collapse:collapse;font-family:var(--mono);font-size:.9rem;width:100%;max-width:760px}
+td,th{padding:6px 10px;border-bottom:1px solid var(--plank);text-align:left;vertical-align:top}
+th{color:var(--lamp);font-weight:500;width:5.5em}
+.sym{color:var(--breath)}
+/* hunter + rooms */
+.hunt{display:grid;gap:32px;grid-template-columns:1fr 1fr;align-items:center}
+@media(max-width:760px){.hunt{grid-template-columns:1fr}}
+.belief{background:var(--wood);border:1px solid var(--plank);border-radius:6px;padding:16px}
+.bar{display:grid;grid-template-columns:7.5em 1fr;gap:10px;align-items:center;font:400 .85rem var(--mono);margin:6px 0}
+.bar span.b{height:12px;background:var(--dust);border-radius:2px;display:block}
+.rooms{list-style:none;padding:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.rooms li{background:var(--wood);border:1px solid var(--plank);border-radius:6px;padding:14px 16px}
+.rooms b{color:var(--lamp);font-weight:700}
+footer{border-top:1px solid var(--plank);padding:40px 0;font:400 .9rem var(--mono);opacity:.85}
+.team{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 20px}
+.team span{background:var(--wood);border:1px solid var(--plank);padding:.4em .8em;border-radius:4px;font-family:var(--mono);font-size:.9rem}
+@media(max-width:700px){#house{transform:translate(500px,110px)}}
+@media(prefers-reduced-motion:reduce){.ring,.win{animation:none;opacity:.35}html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero" role="banner">
+<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+<g fill="#C8643B" opacity=".18"><circle cx="180" cy="130" r="2"/><circle cx="420" cy="70" r="1.5"/><circle cx="860" cy="110" r="2"/><circle cx="1040" cy="60" r="1.5"/><circle cx="640" cy="170" r="1.5"/></g>
+<path d="M0 520 Q200 470 420 505 T820 490 T1200 510 V700 H0Z" fill="#3B2A22"/>
+<path d="M0 580 Q300 540 600 575 T1200 565 V700 H0Z" fill="#2A1B15"/>
+<g id="house" transform="translate(830,300)">
+<g fill="none" stroke="#5FA8A0" stroke-width="3">
+<circle class="ring" cx="80" cy="120" r="60"/><circle class="ring" cx="80" cy="120" r="60"/><circle class="ring" cx="80" cy="120" r="60"/></g>
+<path d="M-10 190 V90 L80 20 L170 90 V190Z" fill="#140E0C" stroke="#E8DCC4" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M-24 92 L80 6 L184 92" fill="none" stroke="#C8643B" stroke-width="6" stroke-linecap="round"/>
+<rect x="55" y="130" width="50" height="60" fill="#2A1B15" stroke="#E8DCC4" stroke-width="2"/>
+<rect class="win" x="18" y="98" width="30" height="28" fill="#E7B65C"/>
+<rect x="120" y="98" width="30" height="28" fill="#2A1B15" stroke="#E8DCC4" stroke-width="2"/>
+<rect x="128" y="-10" width="14" height="40" fill="#2A1B15" stroke="#E8DCC4" stroke-width="2"/>
+<path d="M-60 190 H230" stroke="#C8643B" stroke-width="3"/></g>
+</svg>
+<div class="wrap">
+<h1>Dead Silence</h1>
+<p class="tag">Don't breathe too loud.</p>
+<a class="btn" href="#demo">Try the breath code</a> <a class="btn ghost" href="#team">Watch the demo</a>
+</div>
+</header>
+
+<main>
+<section id="premise"><div class="wrap">
+<h2>The house on Mars has a tenant.</h2>
+<div class="three">
+<div><h3>Where you are</h3><p>A habitat that looks like someone's home. Kitchen, greenhouse, a workshop with the lights half on. The Artemis III is on the pad behind it.</p></div>
+<div><h3>What hunts you</h3><p>It can't see well. It listens. Footsteps, doors, dropped tools, and your breathing all tell it where you are.</p></div>
+<div><h3>How you talk</h3><p>You and your crewmate share a breath code. A sniff is 1. A puff is 2. Every word costs noise, so you get three.</p></div>
+</div>
+<span class="note">say less. live longer.</span>
+</div></section>
+
+<section id="demo" class="demo"><div class="wrap">
+<h2>Try the breath code.</h2>
+<p>Press <b>1</b> for a sniff and <b>2</b> for a puff, or tap the buttons. Pause 0.8 seconds to lock a letter, 2 seconds to lock a word. Watch the noise meter: past the red line, it hears you.</p>
+<div class="panel">
+<svg class="lung" viewBox="0 0 220 220" role="img" aria-label="Lung ring. Grows on a sniff, shrinks on a puff."><circle class="base" cx="110" cy="110" r="90"/><circle id="lungfill" cx="110" cy="110" r="60"/><text id="lungtxt" x="110" y="118" text-anchor="middle" fill="#E8DCC4" font-family="IBM Plex Mono" font-size="22">breathe</text></svg>
+<div class="hud">
+<div class="slots" id="slots" aria-live="polite"></div>
+<div class="code" id="code" aria-label="Current code"></div>
+<div class="meter"><div id="noise"></div><i></i></div>
+<div class="small">noise</div>
+<div class="keys">
+<button id="b1" aria-label="Sniff, symbol 1">1 sniff</button>
+<button id="b2" aria-label="Puff, symbol 2">2 puff</button>
+<button class="reset" id="reset">clear message</button></div>
+<div class="small" id="status">Try: 1 (E), 2 (T), 11 (A), 22 (N).</div>
+</div></div>
+<h3 style="margin:28px 0 8px;font-size:1.2rem">Letter table</h3>
+<p class="small">Common letters get the shortest codes. 1 = sniff, 2 = puff.</p>
+<table id="tbl"></table>
+</div></section>
+
+<section id="hunter"><div class="wrap hunt">
+<div><h2>It remembers where it heard you.</h2>
+<p>The hunter is trained with reinforcement learning. It keeps a belief map of the house. Every sound raises the odds of a room, and the odds fade as time passes.</p>
+<p>Stay quiet and it widens its search. Get loud and it commits.</p></div>
+<div class="belief" role="img" aria-label="Example belief map: kitchen 62 percent, hall 24 percent, workshop 9 percent, others low.">
+<div class="small" style="margin-bottom:8px">Its guess, 5 seconds after a loud breath</div>
+<div class="bar">kitchen<span class="b" style="width:62%"></span></div>
+<div class="bar">hall<span class="b" style="width:24%"></span></div>
+<div class="bar">workshop<span class="b" style="width:9%"></span></div>
+<div class="bar">greenhouse<span class="b" style="width:3%"></span></div>
+<div class="bar">cold storage<span class="b" style="width:2%"></span></div>
+</div></div></section>
+
+<section id="rooms" style="padding-top:0"><div class="wrap">
+<h2>Six rooms between you and the ship.</h2>
+<ul class="rooms">
+<li><b>Kitchen.</b> The fuse box hides behind the pantry. Your crewmate reads the order, you flip the switches.</li>
+<li><b>Greenhouse.</b> Glass floors and loud leaves. Good place to lose it, if you stay still.</li>
+<li><b>Workshop.</b> Tools that clatter when dropped. Useful as a lure.</li>
+<li><b>Med bay.</b> Locked until you find the code. Your crewmate has half of it.</li>
+<li><b>Cold storage.</b> A door that seals from outside. Two consoles, one shared word, ten seconds.</li>
+<li><b>Launch pad.</b> Punch in the code with your own breath. Every digit is noise.</li>
+</ul></div></section>
+
+<section id="team"><div class="wrap">
+<h2>Built in 24 hours.</h2>
+<p>UB Hacking 2026, theme "Into the Hackosmos". Four builders: one on breath recognition and the hunter, three on the game and its look.</p>
+<div class="team"><span>Builder 1</span><span>Builder 2</span><span>Builder 3</span><span>Builder 4</span></div>
+<a class="btn ghost" href="#">Demo video (coming soon)</a> <a class="btn ghost" href="#">Source code</a>
+</div></section>
+</main>
+
+<footer><div class="wrap">Dead Silence. UB Hacking 2026. Original characters and art.</div></footer>
+
+<script>
+(function(){
+var T={"1":"E","2":"T","11":"A","12":"O","21":"I","22":"N","111":"S","112":"H","121":"R","122":"D","211":"L","212":"U","221":"C","222":"M","1111":"F","1112":"W","1121":"G","1122":"Y","1211":"P","1212":"B","1221":"V","1222":"K","2111":"J","2112":"X","2121":"Q","2122":"Z"};
+// table
+var rows={1:[],2:[],3:[],4:[]};Object.keys(T).forEach(function(k){rows[k.length].push(k)});
+var tb=document.getElementById('tbl');
+[1,2,3,4].forEach(function(n){var tr=document.createElement('tr');var th=document.createElement('th');th.textContent=n+(n==1?' breath':' breaths');var td=document.createElement('td');
+td.innerHTML=rows[n].map(function(k){return '<span class="sym">'+k+'</span> '+T[k]}).join('&nbsp;&nbsp; ');tr.appendChild(th);tr.appendChild(td);tb.appendChild(tr)});
+var slotsEl=document.getElementById('slots'),codeEl=document.getElementById('code'),noise=document.getElementById('noise'),lung=document.getElementById('lungfill'),lt=document.getElementById('lungtxt'),st=document.getElementById('status');
+var buf='',cur='',words=[],tL,tW,level=0,r=60;
+function drawSlots(){slotsEl.innerHTML='';for(var i=0;i<3;i++){var d=document.createElement('div');d.className='slot'+(i==words.length&&(cur||buf)?' on':'');d.textContent=(words[i]||(i==words.length?cur:''))||'';if(i==words.length&&cur&&!words[i])d.textContent=cur;slotsEl.appendChild(d)}}
+function drawCode(){codeEl.innerHTML=buf.split('').map(function(c){return c=='1'?'○':'●'}).join(' ')+(T[buf]?' <span class="d">'+T[buf]+'</span>':'')}
+function commitLetter(){if(!buf)return;var L=T[buf];if(L){cur+=L;st.textContent='Locked '+L+'.'}else{st.textContent='No letter for '+buf+'. Cleared.'}buf='';drawCode();drawSlots()}
+function commitWord(){commitLetter();if(cur){if(words.length<3){words.push(cur);st.textContent='Word locked: '+cur+(words.length==3?'. Message full, sending.':'.')}cur=''}drawSlots()}
+function breath(sym){
+ buf+=sym;if(buf.length>4)buf=buf.slice(-4);
+ r=Math.max(30,Math.min(88,r+(sym=='1'?10:-10)));lung.setAttribute('r',r);lt.textContent=sym=='1'?'sniff':'puff';
+ level=Math.min(100,level+22);noise.style.width=level+'%';noise.style.background=level>70?'#D93A2B':'#5FA8A0';
+ if(level>70)st.textContent='Too loud. It heard that.';
+ drawCode();drawSlots();clearTimeout(tL);clearTimeout(tW);
+ tL=setTimeout(commitLetter,800);tW=setTimeout(commitWord,2000);
+}
+setInterval(function(){if(level>0){level=Math.max(0,level-6);noise.style.width=level+'%';noise.style.background=level>70?'#D93A2B':'#5FA8A0'}},300);
+function hit(id){var b=document.getElementById(id);b.classList.add('hit');setTimeout(function(){b.classList.remove('hit')},120)}
+document.getElementById('b1').addEventListener('click',function(){breath('1')});
+document.getElementById('b2').addEventListener('click',function(){breath('2')});
+document.addEventListener('keydown',function(e){if(e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;if(e.key=='1'){breath('1');hit('b1')}else if(e.key=='2'){breath('2');hit('b2')}});
+document.getElementById('reset').addEventListener('click',function(){buf='';cur='';words=[];clearTimeout(tL);clearTimeout(tW);st.textContent='Cleared.';drawCode();drawSlots()});
+drawSlots();drawCode();
+})();
+</script>
+</body>
+</html>
