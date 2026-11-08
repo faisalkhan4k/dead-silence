@@ -19,9 +19,11 @@ export default function Airlock() {
         Builder 1 / Builder 2 / Builder 3 / Builder 4
       </p>
       <div className="flex flex-wrap gap-3">
-        <a href={media.demoVideo.src ?? "#airlock"} className={btnGhost}>
-          {media.demoVideo.label}
-        </a>
+        {media.demoVideo.src && (
+          <a href={media.demoVideo.src} className={btnGhost}>
+            {media.demoVideo.label}
+          </a>
+        )}
         <a href={media.sourceUrl} className={btnGhost}>
           Read the source
         </a>
