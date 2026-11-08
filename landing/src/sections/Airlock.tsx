@@ -4,7 +4,10 @@ import { media } from "@/media";
 export default function Airlock() {
   return (
     <Room id="airlock" tag="06 / Airlock" place="left">
-      <Heading>Built in 24 hours.</Heading>
+      <Heading>Watch a run.</Heading>
+      <Copy>
+        <p>One ship. One breath code. Don&apos;t breathe too loud.</p>
+      </Copy>
       <Copy>
         <p>
           UB Hacking 2026, theme &quot;Into the Hackosmos&quot;. Four builders:

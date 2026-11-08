@@ -7,7 +7,9 @@ import { cellX, ping } from "@/scene/ping";
 export default function CorridorBreath() {
   return (
     <BreathDemo
-      onBreath={(sym) => ping(cellX(2) + (sym === "1" ? -0.8 : 0.8), 0.8)}
+      onBreath={(sym, level) =>
+        ping(cellX(2) + (sym === "1" ? -0.8 : 0.8), 0.8, level)
+      }
     />
   );
 }
