@@ -54,6 +54,16 @@ def original(split):
 
 def fresh(split):
     items = json.loads(SOURCE.read_text(encoding='utf-8'))['manifest']
+    # Add the later dedicated no-breath collection, preserving its recorded split.
+    seen = {item['clip'] for item in items}
+    for meta_path in sorted(ROOT.glob('*/metadata.json')):
+        meta = json.loads(meta_path.read_text(encoding='utf-8-sig'))
+        if (meta_path.parent.name not in seen and meta.get('utc', '') > '2026-11-08T10:27:03'
+                and meta.get('category') == 'NO_BREATH' and meta.get('split') in ('train', 'held-out')
+                and not meta.get('clipped') and not meta.get('audio_flags')):
+            audio_path = meta_path.parent / 'mic.wav'
+            items.append({'clip': meta_path.parent.name, 'split': meta['split'], 'label': 'SILENCE',
+                          'sha256': hashlib.sha256(audio_path.read_bytes()).hexdigest()})
     result, skipped = [], Counter()
     for item in items:
         if item['split'] != split:
