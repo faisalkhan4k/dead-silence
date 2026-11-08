@@ -40,11 +40,11 @@ export default function Reactor() {
         </div>
         <figure
           role="img"
-          aria-label="Example belief map: comms 62 percent, corridor 24 percent, cargo 9 percent, others low."
+          aria-label="Illustration, not live output: example belief map with comms 62 percent, corridor 24 percent, cargo 9 percent, others low."
           className="scrim px-4 py-3 font-mono text-sm"
         >
           <figcaption className="mb-3 uppercase opacity-80">
-            Its guess, 5 seconds after a loud breath
+            Illustration, not live output. Its guess, 5 seconds after a loud breath
           </figcaption>
           {belief.map(([room, pct]) => (
             <div
