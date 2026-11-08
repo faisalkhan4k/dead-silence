@@ -44,7 +44,7 @@ def main():
     train,y,train_counts,train_hashes,train_clips=windows('train')
     test,yt,test_counts,test_hashes,test_clips=windows('held-out')
     if train_hashes & test_hashes:raise ValueError('Identical audio exists in train and held-out; resolve before training.')
-    original=pickle.loads(MODEL.read_bytes())
+    original=pickle.loads((DATA/'window50_model.pkl').read_bytes())
     candidate=RandomForestClassifier(n_estimators=100,max_depth=8,min_samples_leaf=4,random_state=42,n_jobs=2,class_weight='balanced')
     candidate.fit(np.vstack([old_train,train]),np.r_[old_y,y])
     out=ROOT/'experiments'/(datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-'+uuid.uuid4().hex[:8]);out.mkdir(parents=True)

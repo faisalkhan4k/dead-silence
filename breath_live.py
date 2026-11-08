@@ -42,7 +42,9 @@ def find_dataset():
         raise SystemExit('No complete breath dataset found. Run Start Breath Dataset.cmd first and complete training and test collection.')
     return runs[0]
 DATA = find_dataset()
-MODEL = DATA/'window50_model.pkl'
+BASELINE_MODEL = DATA/'window50_model.pkl'
+NOISY_MODEL = HERE/'breath_noise_dataset'/'active_model.pkl'
+MODEL = NOISY_MODEL if NOISY_MODEL.is_file() else BASELINE_MODEL
 RATE, N = 48000, 2400
 LABELS = ['SILENCE', 'INHALE', 'EXHALE']
 
@@ -99,7 +101,7 @@ class Worker(QtCore.QThread):
 
 class Window(Q.QWidget):
     def __init__(self):
-        super().__init__(); self.setWindowTitle('Breath to text • experimental')
+        super().__init__(); self.setWindowTitle('Breath to text • noise-trained' if MODEL == NOISY_MODEL else 'Breath to text • original model')
         self.resize(1420,920); self.setMinimumSize(1000,650)
         self.setStyleSheet(APP_STYLE)
         self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
@@ -315,7 +317,7 @@ class Window(Q.QWidget):
                 import mlflow
                 mlflow.set_tracking_uri('sqlite:///'+(HERE/'breath_mlflow.db').as_posix()); mlflow.set_experiment('breath-live')
                 with mlflow.start_run(run_name='live-inference'):
-                    mlflow.log_params({'window_ms':50,'smoothing_windows':3,'letter_gap_s':self.decoder.letter_gap,'word_gap_s':self.decoder.word_gap,'send_gap_s':self.decoder.send_gap,'control_mode':'silence_send_code_delete','model':'random_forest'})
+                    mlflow.log_params({'window_ms':50,'smoothing_windows':3,'letter_gap_s':self.decoder.letter_gap,'word_gap_s':self.decoder.word_gap,'send_gap_s':self.decoder.send_gap,'control_mode':'silence_send_code_delete','model':'random_forest','model_variant':('noise_trained' if MODEL == NOISY_MODEL else 'original')})
                     metrics={'compute_p50_ms':float(np.median(arr[:,0])), 'compute_p95_ms':float(np.percentile(arr[:,0],95)), 'callback_to_result_p95_ms':float(np.percentile(arr[:,1],95)), 'frames':len(arr),'faults_or_drops':self.drops,'duration_s':time.perf_counter()-self.run_started}
                     target=self.run_target.strip().casefold(); actual=self.message.toPlainText().strip().casefold()
                     if target:
