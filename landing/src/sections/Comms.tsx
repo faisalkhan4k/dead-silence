@@ -8,7 +8,9 @@ const call = [
 export default function Comms() {
   return (
     <Room id="comms" tag="02 / Comms bay" place="right">
-      <Heading>Earth Command is on the line.</Heading>
+      <div className="scrim inline-block px-4 py-2">
+        <Heading>Earth Command is on the line.</Heading>
+      </div>
       <Copy>
         <p>
           The crew is dead. The ship is still running. The only help you have is
