@@ -102,7 +102,7 @@ class Worker(QtCore.QThread):
 
 class Window(Q.QWidget):
     def __init__(self):
-        super().__init__(); self.setWindowTitle('Breath to text • noise-trained' if MODEL == NOISY_MODEL else 'Breath to text • original model')
+        super().__init__(); self.setWindowTitle('Breath to text • noise-trained' if MODEL == NOISY_MODEL else 'Breath to text • pre-marker 50 ms model')
         self.resize(1420,920); self.setMinimumSize(1000,650)
         self.setStyleSheet(APP_STYLE)
         self.model=pickle.loads(MODEL.read_bytes()); self.q=queue.Queue(maxsize=50)
